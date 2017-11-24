@@ -106,4 +106,7 @@
     <string name="remove_recentlyplay_success">Delete Song From Recentyl Play Success</string>
     <string name="color">Color</string>
     <string name="sure">Sure</string>
+
+    <string name="main_page">Home</string>
+
 </resources>

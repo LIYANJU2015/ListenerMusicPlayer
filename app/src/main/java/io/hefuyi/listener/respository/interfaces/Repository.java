@@ -7,6 +7,7 @@ import io.hefuyi.listener.api.model.ArtistInfo;
 import io.hefuyi.listener.mvp.model.Album;
 import io.hefuyi.listener.mvp.model.Artist;
 import io.hefuyi.listener.mvp.model.FolderInfo;
+import io.hefuyi.listener.mvp.model.HomeSound;
 import io.hefuyi.listener.mvp.model.Playlist;
 import io.hefuyi.listener.mvp.model.Song;
 import rx.Observable;
@@ -18,6 +19,8 @@ import rx.Observable;
 public interface Repository {
 
     //from network
+
+    Observable<HomeSound> getHomeSound();
 
     Observable<ArtistInfo> getArtistInfo( String artist);
 

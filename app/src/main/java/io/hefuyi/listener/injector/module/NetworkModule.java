@@ -12,6 +12,8 @@ import dagger.Provides;
 import io.hefuyi.listener.Constants;
 import io.hefuyi.listener.ListenerApp;
 import io.hefuyi.listener.injector.scope.PerApplication;
+import io.hefuyi.listener.mvp.model.HomeSound;
+import io.hefuyi.listener.respository.HomeSoundDeserializer;
 import io.hefuyi.listener.respository.RepositoryImpl;
 import io.hefuyi.listener.respository.interfaces.Repository;
 import io.hefuyi.listener.util.FileUtil;
@@ -35,9 +37,41 @@ public class NetworkModule {
 
     @Provides
     @PerApplication
-    Repository provideRepository(@Named("kugou") Retrofit kugou, @Named("lastfm") Retrofit lastfm) {
-        return new RepositoryImpl(mListenerApp, kugou, lastfm);
+    Repository provideRepository(@Named("kugou") Retrofit kugou,
+                                 @Named("lastfm") Retrofit lastfm,
+                                 @Named("homesound") Retrofit homefm) {
+        return new RepositoryImpl(mListenerApp, kugou, lastfm, homefm);
     }
+
+    @Provides
+    @Named("homesound")
+    @PerApplication
+    Retrofit provideHomeSound() {
+        String endpointUrl = Constants.HOME_SOUND_URL;
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(HomeSound.ContentsBeanX.class, new HomeSoundDeserializer());
+        Gson gson = gsonBuilder.create();
+        GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
+
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .cache(new Cache(FileUtil.getHttpCacheDir(mListenerApp.getApplicationContext()), Constants.HTTP_CACHE_SIZE))
+                .connectTimeout(Constants.HTTP_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
+                .readTimeout(Constants.HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS)
+                .build();
+//        OkHttpClient newClient = client.newBuilder().addInterceptor(loggingInterceptor).build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(endpointUrl)
+                .client(client)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+        return retrofit;
+    }
+
 
     @Provides
     @Named("lastfm")

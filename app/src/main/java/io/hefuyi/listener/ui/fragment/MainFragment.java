@@ -126,7 +126,7 @@ public class MainFragment extends Fragment {
 
         if (viewPager != null) {
             setupViewPager(viewPager);
-            viewPager.setOffscreenPageLimit(2);
+            viewPager.setOffscreenPageLimit(3);
             viewPager.setCurrentItem(mPreferences.getStartPageIndex());
         }
 
@@ -134,6 +134,7 @@ public class MainFragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getChildFragmentManager());
+        adapter.addFragment(HomeFragment.newInstance(), this.getString(R.string.main_page));
         adapter.addFragment(SongsFragment.newInstance(action), this.getString(R.string.songs));
         adapter.addFragment(ArtistFragment.newInstance(action), this.getString(R.string.artists));
         adapter.addFragment(AlbumFragment.newInstance(action), this.getString(R.string.albums));

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:background="?selectableItemBackground"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:id="@+id/list_item_linear1"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/song_image1"
+            android:src="?default_album_drawable"
+            android:layout_width="66dp"
+            android:layout_height="66dp" />
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:id="@+id/song_name_tv1"
+            android:layout_marginTop="6dp"
+            android:text="222"
+            style="@style/ListItemTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:id="@+id/song_singer_tv1"
+            android:text="3333333333"
+            android:layout_marginTop="6dp"
+            style="@style/ListItemSubTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:background="?selectableItemBackground"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:id="@+id/list_item_linear2"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/song_image2"
+            android:src="?default_album_drawable"
+            android:layout_width="66dp"
+            android:layout_height="66dp" />
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:id="@+id/song_name_tv2"
+            android:layout_marginTop="6dp"
+            android:text="222"
+            style="@style/ListItemTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:id="@+id/song_singer_tv2"
+            android:text="3333333333"
+            android:layout_marginTop="6dp"
+            style="@style/ListItemSubTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:background="?selectableItemBackground"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:id="@+id/list_item_linear3"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/song_image3"
+            android:src="?default_album_drawable"
+            android:layout_width="66dp"
+            android:layout_height="66dp" />
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:id="@+id/song_name_tv3"
+            android:layout_marginTop="6dp"
+            android:text="222"
+            style="@style/ListItemTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:id="@+id/song_singer_tv3"
+            android:text="33333333333333333333333333333333"
+            android:layout_marginTop="6dp"
+            style="@style/ListItemSubTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
+
+    <View
+        android:background="@color/colorDividerBlack"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+</LinearLayout>
