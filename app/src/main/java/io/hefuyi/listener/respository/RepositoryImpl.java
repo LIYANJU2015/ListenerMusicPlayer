@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.List;
 
 import io.hefuyi.listener.R;
-import io.hefuyi.listener.api.HomeSoundApiService;
+import io.hefuyi.listener.api.YoutubeApiService;
 import io.hefuyi.listener.api.KuGouApiService;
 import io.hefuyi.listener.api.LastFmApiService;
 import io.hefuyi.listener.api.model.ArtistInfo;
@@ -27,9 +27,9 @@ import io.hefuyi.listener.dataloader.TopTracksLoader;
 import io.hefuyi.listener.mvp.model.Album;
 import io.hefuyi.listener.mvp.model.Artist;
 import io.hefuyi.listener.mvp.model.FolderInfo;
-import io.hefuyi.listener.mvp.model.HomeSound;
 import io.hefuyi.listener.mvp.model.Playlist;
 import io.hefuyi.listener.mvp.model.Song;
+import io.hefuyi.listener.mvp.model.YouTubeVideos;
 import io.hefuyi.listener.respository.interfaces.Repository;
 import io.hefuyi.listener.util.LyricUtil;
 import io.hefuyi.listener.util.SoundCloudUtil;
@@ -46,19 +46,19 @@ public class RepositoryImpl implements Repository {
 
     private KuGouApiService mKuGouApiService;
     private LastFmApiService mLastFmApiService;
-    private HomeSoundApiService mHomeSoundApiService;
+    private YoutubeApiService mHomeSoundApiService;
     private Context mContext;
 
     public RepositoryImpl(Context context, Retrofit kugou, Retrofit lastfm, Retrofit homefm) {
         mContext = context;
         mKuGouApiService = kugou.create(KuGouApiService.class);
         mLastFmApiService = lastfm.create(LastFmApiService.class);
-        mHomeSoundApiService = homefm.create(HomeSoundApiService.class);
+        mHomeSoundApiService = homefm.create(YoutubeApiService.class);
     }
 
     @Override
-    public Observable<HomeSound> getHomeSound() {
-        return mHomeSoundApiService.getHomeSound(SoundCloudUtil.getClientId());
+    public Observable<YouTubeVideos> getYoutubeVideos(String pageToken, String videoCategoryId) {
+        return mHomeSoundApiService.getYoutubeVideos(pageToken, videoCategoryId);
     }
 
     @Override

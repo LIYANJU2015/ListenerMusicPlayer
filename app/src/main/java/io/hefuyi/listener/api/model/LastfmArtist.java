@@ -9,7 +9,7 @@ import java.util.List;
  * Created by hefuyi on 2016/11/3.
  */
 
-public class LastfmArtist {
+public class  LastfmArtist {
 
     private static final String NAME = "name";
     private static final String IMAGE = "image";

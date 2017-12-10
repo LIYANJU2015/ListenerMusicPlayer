@@ -12,8 +12,8 @@ import dagger.Provides;
 import io.hefuyi.listener.Constants;
 import io.hefuyi.listener.ListenerApp;
 import io.hefuyi.listener.injector.scope.PerApplication;
-import io.hefuyi.listener.mvp.model.HomeSound;
-import io.hefuyi.listener.respository.HomeSoundDeserializer;
+import io.hefuyi.listener.mvp.model.YouTubeVideos;
+import io.hefuyi.listener.respository.YoutubeSnippetDeserializer;
 import io.hefuyi.listener.respository.RepositoryImpl;
 import io.hefuyi.listener.respository.interfaces.Repository;
 import io.hefuyi.listener.util.FileUtil;
@@ -47,10 +47,10 @@ public class NetworkModule {
     @Named("homesound")
     @PerApplication
     Retrofit provideHomeSound() {
-        String endpointUrl = Constants.HOME_SOUND_URL;
+        String endpointUrl = Constants.BASE_API_URL_YOUTUBE;
 
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(HomeSound.ContentsBeanX.class, new HomeSoundDeserializer());
+        gsonBuilder.registerTypeAdapter(YouTubeVideos.class, new YoutubeSnippetDeserializer());
         Gson gson = gsonBuilder.create();
         GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
 
@@ -61,7 +61,6 @@ public class NetworkModule {
                 .connectTimeout(Constants.HTTP_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
                 .readTimeout(Constants.HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS)
                 .build();
-//        OkHttpClient newClient = client.newBuilder().addInterceptor(loggingInterceptor).build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(endpointUrl)

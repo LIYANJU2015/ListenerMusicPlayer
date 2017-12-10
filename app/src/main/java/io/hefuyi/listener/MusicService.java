@@ -1208,7 +1208,7 @@ public class MusicService extends Service {
         artwork = ImageLoader.getInstance().loadImageSync(ListenerUtil.getAlbumArtUri(getAlbumId()).toString());
 
         if (artwork == null) {
-            artwork = ImageLoader.getInstance().loadImageSync("drawable://" + R.drawable.icon_album_default);
+            artwork = ImageLoader.getInstance().loadImageSync("drawable://" + R.drawable.default_album_art);
         }
 
         if (mNotificationPostTime == 0) {

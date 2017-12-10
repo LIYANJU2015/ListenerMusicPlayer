@@ -1,25 +1,30 @@
 package io.hefuyi.listener.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
+import com.paginate.Paginate;
+import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,14 +39,18 @@ import io.hefuyi.listener.injector.component.HomeComponent;
 import io.hefuyi.listener.injector.module.ActivityModule;
 import io.hefuyi.listener.injector.module.HomeModule;
 import io.hefuyi.listener.mvp.contract.HomeContract;
-import io.hefuyi.listener.mvp.model.HomeSound;
+import io.hefuyi.listener.mvp.model.YouTubeVideos;
+import io.hefuyi.listener.ui.activity.YouTubePlayerActivity;
+import io.hefuyi.listener.util.ATEUtil;
+import io.hefuyi.listener.util.FileUtil;
+import io.hefuyi.listener.util.HomeDiffCallBack;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by liyanju on 2017/11/18.
  */
 
-public class HomeFragment extends Fragment implements HomeContract.View {
+public class HomeFragment extends Fragment implements HomeContract.View, SwipeRefreshLayout.OnRefreshListener, Paginate.Callbacks {
 
     @Inject
     HomeContract.Presenter mPresenter;
@@ -55,11 +64,16 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     @BindView(R.id.progressbar)
     MaterialProgressBar progressBar;
 
-    private static ArrayList<HomeSoundInAdapter> mDatas = new ArrayList<>();
+    @BindView(R.id.home_swipeRefresh)
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    private static ArrayList<YouTubeVideos.Snippet> mDatas = new ArrayList<>();
 
     private Context mContext;
 
-    private MultiItemTypeAdapter itemTypeAdapter;
+    private Activity activity;
+
+    private CommonAdapter mCommonAdapter;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -69,6 +83,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        activity = getActivity();
     }
 
     @Override
@@ -80,21 +95,120 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     }
 
     @Override
+    public void onRefresh() {
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
+        if (mIsLoadingMore) {
+            return;
+        }
+        swipeRefreshLayout.setRefreshing(true);
+        mPresenter.requestYoutube(sNextPageToken, "10");
+    }
+
+    @Override
+    public void onLoadMore() {
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
+        if (swipeRefreshLayout.isRefreshing()) {
+            return;
+        }
+        mIsLoadingMore = true;
+        mPresenter.requestYoutube(sNextPageToken, "10");
+    }
+
+    private static String sNextPageToken = "";
+
+    private Paginate mPaginate;
+
+    private boolean mIsLoadedAll;
+
+    private boolean mIsLoadingMore;
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         if (mDatas.size() == 0) {
             progressBar.setVisibility(View.VISIBLE);
-            mPresenter.requestHomeSound();
+            mPresenter.requestYoutube(sNextPageToken, "10");
         }
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeColors(ATEUtil.getThemePrimaryColor(mContext));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.setHasFixedSize(true);
-        itemTypeAdapter = new MultiItemTypeAdapter(mContext, mDatas);
-        itemTypeAdapter.addItemViewDelegate(new TitleItemDelagate());
-        itemTypeAdapter.addItemViewDelegate(new ListItemDelagate());
-        itemTypeAdapter.addItemViewDelegate(new SingleItemDelagate());
-        recyclerView.setAdapter(itemTypeAdapter);
+        mCommonAdapter = new CommonAdapter<YouTubeVideos.Snippet>(mContext,R.layout.home_video_item, mDatas) {
+            @Override
+            protected void convert(ViewHolder holder,  final YouTubeVideos.Snippet snippet, int position) {
+                ImageView imageView = holder.getView(R.id.img);
+                if (snippet.thumbnails.getStandard() != null) {
+                    Glide.with(mContext).load(snippet.thumbnails.getStandard().getUrl()).crossFade()
+                            .placeholder(R.drawable.mask).into(imageView);
+                } else if (snippet.thumbnails.getHigh() != null) {
+                    Glide.with(mContext).load(snippet.thumbnails.getHigh().getUrl()).crossFade()
+                            .placeholder(R.drawable.mask).into(imageView);
+                } else if (snippet.thumbnails.getStandard() != null) {
+                    Glide.with(mContext).load(snippet.thumbnails.getStandard().getUrl()).crossFade()
+                            .placeholder(R.drawable.mask).into(imageView);
+                } else {
+                    imageView.setImageResource(R.drawable.mask);
+                }
+
+                TextView titleTV = holder.getView(R.id.title);
+                titleTV.setText(snippet.title);
+
+                TextView descriptionTV = holder.getView(R.id.description);
+                if (snippet.statistics != null) {
+                    descriptionTV.setText(FileUtil
+                            .sizeFormatNum2String(Long.parseLong(snippet.statistics.getViewCount())));
+                } else {
+                    descriptionTV.setText("");
+                }
+
+                TextView timeTV = holder.getView(R.id.time);
+                if (snippet.contentDetails != null) {
+                    timeTV.setText(FileUtil.convertDuration(snippet.contentDetails.duration));
+                } else {
+                    timeTV.setText("");
+                }
+
+                holder.setOnClickListener(R.id.card_view, new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        YouTubePlayerActivity.launch(activity,
+                                "https://www.youtube.com/watch?v=" + snippet.vid);
+                    }
+                });
+            }
+        };
+        recyclerView.setAdapter(mCommonAdapter);
+
+        mPaginate = Paginate.with(recyclerView, this)
+                .setLoadingTriggerThreshold(2)
+                .build();
+        mPaginate.setHasMoreDataToLoad(false);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mPaginate != null) {
+            mPaginate.unbind();
+        }
+    }
+
+    @Override
+    public boolean isLoading() {
+        return mIsLoadingMore;
+    }
+
+    @Override
+    public boolean hasLoadedAllItems() {
+        return mIsLoadedAll;
     }
 
     @Override
@@ -124,185 +238,61 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     }
 
     @Override
-    public void showHomeSound(HomeSound homeSound) {
+    public void showYoutubeData(YouTubeVideos youTubeVideos) {
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
         emptyView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
 
-        try {
-            HomeSoundInAdapter.convertHomeSound(homeSound, mDatas);
-            itemTypeAdapter.notifyDataSetChanged();
-        } catch (Exception e) {
-            e.printStackTrace();
-            mDatas.clear();
-            showEmptyView();
-        }
+        sNextPageToken = youTubeVideos.nextPageToken;
+        mIsLoadingMore = false;
+        mIsLoadedAll = TextUtils.isEmpty(youTubeVideos.nextPageToken);
+
+        final ArrayList<YouTubeVideos.Snippet> newDatas = new ArrayList<>();
+        newDatas.addAll(mDatas);
+        newDatas.addAll(youTubeVideos.items);
+
+        new AsyncTask<ArrayList<YouTubeVideos.Snippet>, Void, DiffUtil.DiffResult>(){
+            @Override
+            protected DiffUtil.DiffResult doInBackground(ArrayList<YouTubeVideos.Snippet>[] arrayLists) {
+                return DiffUtil.calculateDiff(new HomeDiffCallBack(mDatas, arrayLists[0]), true);
+            }
+
+            @Override
+            protected void onPostExecute(DiffUtil.DiffResult diffResult) {
+                super.onPostExecute(diffResult);
+                diffResult.dispatchUpdatesTo(mCommonAdapter);
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    mDatas.clear();
+                }
+                mDatas.addAll(newDatas);
+            }
+        }.execute(newDatas);
     }
 
     @Override
     public void showEmptyView() {
-        emptyView.setVisibility(View.VISIBLE);
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        mIsLoadingMore = false;
+
+        if (mDatas.size() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+        } else{
+            emptyView.setVisibility(View.GONE);
+        }
+
         recyclerView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
-    }
-
-    class SingleItemDelagate implements ItemViewDelegate<HomeSoundInAdapter> {
-
-        @Override
-        public int getItemViewLayoutId() {
-            return R.layout.home_singleitem_layout;
-        }
-
-        @Override
-        public boolean isForViewType(HomeSoundInAdapter item, int position) {
-            return item.type == HomeSoundInAdapter.SINGLE_ITEM_TYPE;
-        }
-
-        @Override
-        public void convert(ViewHolder holder, HomeSoundInAdapter homeSoundInAdapter, int position) {
-            holder.setText(R.id.single_title_tv, homeSoundInAdapter.contentsBean2.getName());
-
-            Glide.with(mContext).load(homeSoundInAdapter.contentsBean2.getContents().get(0).getAlbum_images()).crossFade()
-                    .placeholder(R.drawable.icon_album_default).error(R.drawable.icon_album_default).centerCrop()
-                    .into((ImageView) holder.getView(R.id.item_album_iv));
-            holder.setOnClickListener(R.id.home_single_relative, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-        }
-    }
-
-    class ListItemDelagate implements ItemViewDelegate<HomeSoundInAdapter> {
-        @Override
-        public int getItemViewLayoutId() {
-            return R.layout.home_list_item_layout;
-        }
-
-        @Override
-        public boolean isForViewType(HomeSoundInAdapter item, int position) {
-            return item.type == HomeSoundInAdapter.LIST_ITEM_TYPE;
-        }
-
-        @Override
-        public void convert(ViewHolder holder, HomeSoundInAdapter homeSoundInAdapter, int position) {
-            holder.setText(R.id.song_name_tv1, homeSoundInAdapter.list.get(0).getSong_name());
-            holder.setText(R.id.song_singer_tv1, homeSoundInAdapter.list.get(0).getSinger());
-            Glide.with(mContext).load(homeSoundInAdapter.list.get(0).getAlbum_images()).crossFade().centerCrop()
-                    .placeholder(R.drawable.icon_album_default).error(R.drawable.icon_album_default)
-                    .into((ImageView) holder.getView(R.id.song_image1));
-            holder.setOnClickListener(R.id.list_item_linear3, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-
-            holder.setText(R.id.song_name_tv2, homeSoundInAdapter.list.get(1).getSong_name());
-            holder.setText(R.id.song_singer_tv2, homeSoundInAdapter.list.get(1).getSinger());
-            Glide.with(mContext).load(homeSoundInAdapter.list.get(1).getAlbum_images()).crossFade().centerCrop()
-                    .placeholder(R.drawable.icon_album_default).error(R.drawable.icon_album_default)
-                    .into((ImageView) holder.getView(R.id.song_image2));
-            holder.setOnClickListener(R.id.list_item_linear2, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-
-            holder.setText(R.id.song_name_tv3, homeSoundInAdapter.list.get(2).getSong_name());
-            holder.setText(R.id.song_singer_tv3, homeSoundInAdapter.list.get(2).getSinger());
-            Glide.with(mContext).load(homeSoundInAdapter.list.get(2).getAlbum_images()).crossFade().centerCrop()
-                    .placeholder(R.drawable.icon_album_default).error(R.drawable.icon_album_default)
-                    .into((ImageView) holder.getView(R.id.song_image3));
-            holder.setOnClickListener(R.id.list_item_linear3, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-        }
-    }
-
-    static class TitleItemDelagate implements ItemViewDelegate<HomeSoundInAdapter> {
-
-        @Override
-        public int getItemViewLayoutId() {
-            return R.layout.home_title_item_layout;
-        }
-
-        @Override
-        public boolean isForViewType(HomeSoundInAdapter item, int position) {
-            return item.type == HomeSoundInAdapter.TITLE_ITEM_TYPE;
-        }
-
-        @Override
-        public void convert(ViewHolder holder, HomeSoundInAdapter homeSoundInAdapter, int position) {
-            holder.setText(R.id.home_item_title, homeSoundInAdapter.contentsBeanX.getName());
-            holder.setOnClickListener(R.id.title_relative, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-            if (homeSoundInAdapter.contentsBeanX.getData_type() == 0) {
-                holder.getView(R.id.home_back_iv).setVisibility(View.INVISIBLE);
-            } else {
-                holder.getView(R.id.home_back_iv).setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    static class HomeSoundInAdapter {
-
-        public static final int TITLE_ITEM_TYPE = 1;
-
-        public static final int LIST_ITEM_TYPE = 2;
-
-        public static final int SINGLE_ITEM_TYPE = 3;
-
-        public int type;
-
-        public ArrayList<HomeSound.ContentsBeanX.ContentsBean> list = new ArrayList<>();
-        public HomeSound.ContentsBean2 contentsBean2;
-
-        public HomeSound.ContentsBeanX contentsBeanX;
-
-
-        public static void convertHomeSound(HomeSound homeSound, ArrayList<HomeSoundInAdapter> homeSoundInAdapters) {
-            List<HomeSound.ContentsBeanX> arrayList = homeSound.getContents();
-
-            for (HomeSound.ContentsBeanX contentsBeanX : arrayList) {
-                HomeSoundInAdapter homeSoundInAdapter = new HomeSoundInAdapter();
-                if (contentsBeanX.getData_type() == 0) {
-                    homeSoundInAdapter.type = TITLE_ITEM_TYPE;
-                    homeSoundInAdapter.contentsBeanX = new HomeSound.ContentsBeanX();
-                    homeSoundInAdapter.contentsBeanX.setName(contentsBeanX.getName());
-                    homeSoundInAdapters.add(homeSoundInAdapter);
-
-                    for (HomeSound.ContentsBean2 contentsBean2 : contentsBeanX.contents2) {
-                        homeSoundInAdapter = new HomeSoundInAdapter();
-                        homeSoundInAdapter.type = SINGLE_ITEM_TYPE;
-                        homeSoundInAdapter.contentsBean2 = contentsBean2;
-                        homeSoundInAdapters.add(homeSoundInAdapter);
-                    }
-
-                } else {
-
-                    homeSoundInAdapter.type = TITLE_ITEM_TYPE;
-                    homeSoundInAdapter.contentsBeanX = contentsBeanX;
-                    homeSoundInAdapters.add(homeSoundInAdapter);
-
-                    homeSoundInAdapter = new HomeSoundInAdapter();
-                    homeSoundInAdapter.type = LIST_ITEM_TYPE;
-                    homeSoundInAdapter.list.add(contentsBeanX.contents.get(4));
-                    homeSoundInAdapter.list.add(contentsBeanX.contents.get(1));
-                    homeSoundInAdapter.list.add(contentsBeanX.contents.get(2));
-                    homeSoundInAdapters.add(homeSoundInAdapter);
-                }
-            }
-        }
-
     }
 }

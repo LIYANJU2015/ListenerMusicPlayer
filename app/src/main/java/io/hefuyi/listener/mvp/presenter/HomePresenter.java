@@ -1,8 +1,8 @@
 package io.hefuyi.listener.mvp.presenter;
 
 import io.hefuyi.listener.mvp.contract.HomeContract;
-import io.hefuyi.listener.mvp.model.HomeSound;
-import io.hefuyi.listener.mvp.usecase.GetHomeSound;
+import io.hefuyi.listener.mvp.model.YouTubeVideos;
+import io.hefuyi.listener.mvp.usecase.GetYoutube;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -15,13 +15,13 @@ import rx.subscriptions.CompositeSubscription;
 
 public class HomePresenter implements HomeContract.Presenter {
 
-    private GetHomeSound mGetSoundCloud;
+    private GetYoutube mGetSoundCloud;
 
     private CompositeSubscription mCompositeSubscription;
 
     private HomeContract.View mView;
 
-    public HomePresenter(GetHomeSound getSoundCloud) {
+    public HomePresenter(GetYoutube getSoundCloud) {
         mGetSoundCloud = getSoundCloud;
     }
 
@@ -42,19 +42,19 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     @Override
-    public void requestHomeSound() {
+    public void requestYoutube(String pageToken, String videoCategoryId) {
         mCompositeSubscription.clear();
-        Subscription subscription = mGetSoundCloud.execute(new GetHomeSound.RequestValues(""))
-                .getHomeSound()
+        Subscription subscription = mGetSoundCloud.execute(new GetYoutube.RequestValues(pageToken, videoCategoryId))
+                .getYoutubeVideos()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<HomeSound>() {
+                .subscribe(new Action1<YouTubeVideos>() {
                     @Override
-                    public void call(HomeSound soundClound) {
-                        if (soundClound == null || soundClound.getContents().size() == 0) {
+                    public void call(YouTubeVideos youTubeVideos) {
+                        if (youTubeVideos == null || youTubeVideos.items.size() == 0) {
                             mView.showEmptyView();
                         } else {
-                            mView.showHomeSound(soundClound);
+                            mView.showYoutubeData(youTubeVideos);
                         }
                     }
                 });

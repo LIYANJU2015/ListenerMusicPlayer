@@ -64,7 +64,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.SettingActivity">
+        <activity android:name=".ui.activity.SettingActivity" android:screenOrientation="portrait" >
         </activity>
 
         <service
@@ -78,6 +78,12 @@
                 <action android:name="android.media.AUDIO_BECOMING_NOISY"/>
             </intent-filter>
         </receiver>
+
+        <activity android:name=".ui.activity.YouTubePlayerActivity"
+            android:hardwareAccelerated="true"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
 
     </application>
 

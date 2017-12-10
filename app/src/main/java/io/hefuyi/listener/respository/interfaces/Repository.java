@@ -10,6 +10,7 @@ import io.hefuyi.listener.mvp.model.FolderInfo;
 import io.hefuyi.listener.mvp.model.HomeSound;
 import io.hefuyi.listener.mvp.model.Playlist;
 import io.hefuyi.listener.mvp.model.Song;
+import io.hefuyi.listener.mvp.model.YouTubeVideos;
 import rx.Observable;
 
 /**
@@ -20,7 +21,7 @@ public interface Repository {
 
     //from network
 
-    Observable<HomeSound> getHomeSound();
+    Observable<YouTubeVideos> getYoutubeVideos(String pageToken, String videoCategoryId);
 
     Observable<ArtistInfo> getArtistInfo( String artist);
 

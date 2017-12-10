@@ -16,7 +16,7 @@
             android:id="@+id/item_album_iv"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/icon_album_default" />
+            android:src="@drawable/default_album_art" />
 
         <TextView
             android:id="@+id/single_title_tv"

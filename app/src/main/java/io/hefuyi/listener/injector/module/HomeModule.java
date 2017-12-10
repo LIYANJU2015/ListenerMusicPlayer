@@ -4,7 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.hefuyi.listener.mvp.contract.HomeContract;
 import io.hefuyi.listener.mvp.presenter.HomePresenter;
-import io.hefuyi.listener.mvp.usecase.GetHomeSound;
+import io.hefuyi.listener.mvp.usecase.GetYoutube;
 import io.hefuyi.listener.respository.interfaces.Repository;
 
 /**
@@ -14,12 +14,12 @@ import io.hefuyi.listener.respository.interfaces.Repository;
 public class HomeModule {
 
     @Provides
-    HomeContract.Presenter getHomePresenter(GetHomeSound getSoundCloud) {
+    HomeContract.Presenter getHomePresenter(GetYoutube getSoundCloud) {
         return new HomePresenter(getSoundCloud);
     }
 
     @Provides
-    GetHomeSound getSongsUsecase(Repository repository) {
-        return new GetHomeSound(repository);
+    GetYoutube getSongsUsecase(Repository repository) {
+        return new GetYoutube(repository);
     }
 }

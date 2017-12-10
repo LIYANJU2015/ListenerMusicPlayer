@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?android:actionBarSize">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="@android:color/white"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:titleTextColor="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@drawable/iv_back_selector"
+                android:clickable="true"
+                android:scaleType="center"
+                android:src="@mipmap/back" />
+
+            <View
+                android:id="@+id/view_line"
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@+id/iv_back"
+                android:background="#e4e4e4" />
+
+            <ImageView
+                android:id="@+id/iv_finish"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/view_line"
+                android:background="@drawable/iv_back_selector"
+                android:scaleType="center"
+                android:src="@mipmap/cha" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+
+            <ImageView
+                android:id="@+id/iv_more"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/iv_back_selector"
+                android:scaleType="center"
+                android:src="@mipmap/more" />
+        </LinearLayout>
+
+
+    </android.support.v7.widget.Toolbar>
+</android.support.design.widget.AppBarLayout>
+

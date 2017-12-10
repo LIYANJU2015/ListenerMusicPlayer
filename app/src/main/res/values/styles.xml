@@ -12,13 +12,14 @@
     <style name="ThemeBaseLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="cardStyle">@style/CardViewStyle.Light</item>
         <item name="ate_key">light_theme</item>
+        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/window_background</item>
         <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
         <item name="android:textColorPrimary">@color/colorPrimaryTextBlack</item>
         <item name="android:textColorSecondary">@color/colorSubTextBlack</item>
         <item name="album_default_palette_color">@color/album_default_palette_color_light</item>
-        <item name="default_album_drawable">@drawable/icon_album_default</item>
-        <item name="default_singer_drawable">@drawable/icon_singer_default</item>
+        <item name="default_album_drawable">@drawable/default_album_art</item>
+        <item name="default_singer_drawable">@drawable/default_artist_image</item>
         <item name="ttPopupMenuStyle">@style/AppTheme.PopupOverlay</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
