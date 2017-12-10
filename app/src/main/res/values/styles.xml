@@ -12,7 +12,6 @@
     <style name="ThemeBaseLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="cardStyle">@style/CardViewStyle.Light</item>
         <item name="ate_key">light_theme</item>
-        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/window_background</item>
         <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
         <item name="android:textColorPrimary">@color/colorPrimaryTextBlack</item>
@@ -40,6 +39,10 @@
         <item name="colorPrimary">@color/colorPrimaryDarkTheme</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkDarkTheme</item>
         <item name="colorAccent">@color/colorAccentDarkTheme</item>
+    </style>
+
+    <style name="translucent_theme" parent="ThemeBaseLight">
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="AppThemeLight" parent="ThemeBaseLight"/>

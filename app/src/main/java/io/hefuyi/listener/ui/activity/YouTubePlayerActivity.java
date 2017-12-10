@@ -119,6 +119,7 @@ public class YouTubePlayerActivity extends ATEActivity {
     private void toCopy(Context context, String text) {
         ClipboardManager mClipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, text));
+        Toast.makeText(this, R.string.copy_link, Toast.LENGTH_SHORT).show();
     }
 
     private CustomSwipeToRefresh swipeRefreshLayout;
