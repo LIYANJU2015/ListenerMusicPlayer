@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
+import io.hefuyi.listener.ListenerApp;
+import io.hefuyi.listener.mvp.model.EqualizerModel;
+
 /**
  * Created by hefuyi on 2016/11/3.
  */
@@ -142,6 +145,19 @@ public class PreferencesUtility {
         final SharedPreferences.Editor editor = mPreferences.edit();
         editor.putInt(TOGGLE_PLAYLIST_VIEW, i);
         editor.apply();
+    }
+
+    public void saveEqualizerModel(EqualizerModel model) {
+        ACache.get(ListenerApp.sContext).put("EqualizerModel", model);
+    }
+
+    public EqualizerModel getEqualizerModel() {
+        Object obj = ACache.get(ListenerApp.sContext).getAsObject("EqualizerModel");
+        if (obj == null) {
+            return new EqualizerModel();
+        } else {
+            return (EqualizerModel)obj;
+        }
     }
 
 }

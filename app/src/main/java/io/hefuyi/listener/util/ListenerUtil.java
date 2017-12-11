@@ -25,6 +25,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.hefuyi.listener.MusicPlayer;
 import io.hefuyi.listener.R;
@@ -66,6 +68,12 @@ public class ListenerUtil {
 
     public static boolean isJellyBeanMR1() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
+    }
+
+    public static ExecutorService sExecutorService = Executors.newSingleThreadExecutor();
+
+    public static void runSingleThread(Runnable runnable) {
+        sExecutorService.execute(runnable);
     }
 
     public static Uri getAlbumArtUri(long paramInt) {

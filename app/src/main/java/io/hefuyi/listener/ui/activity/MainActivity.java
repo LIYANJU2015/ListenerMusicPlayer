@@ -91,6 +91,15 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
 
         }
     };
+//    private Runnable navigateFolders = new Runnable() {
+//        public void run() {
+//            navigationView.getMenu().findItem(R.id.nav_folders).setChecked(true);
+//            Fragment fragment = new FoldersFragment();
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            transaction.hide(getSupportFragmentManager().findFragmentById(R.id.fragment_container));
+//            transaction.replace(R.id.fragment_container, fragment).commit();
+//        }
+//    };
     private Runnable navigatePlaylist = new Runnable() {
         public void run() {
             navigationView.getMenu().findItem(R.id.nav_playlists).setChecked(true);
@@ -109,16 +118,6 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
             transaction.replace(R.id.fragment_container, fragment).commit();
         }
     };
-    private Runnable navigateFolders = new Runnable() {
-        public void run() {
-            navigationView.getMenu().findItem(R.id.nav_folders).setChecked(true);
-            Fragment fragment = new FoldersFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.hide(getSupportFragmentManager().findFragmentById(R.id.fragment_container));
-            transaction.replace(R.id.fragment_container, fragment).commit();
-
-        }
-    };
     private Runnable navigateRecentPlay = new Runnable() {
         public void run() {
             navigationView.getMenu().findItem(R.id.nav_recent_play).setChecked(true);
@@ -135,6 +134,7 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
             transaction.replace(R.id.fragment_container, fragment).commit();
         }
     };
+
     private Runnable navigatePlayRanking = new Runnable() {
         public void run() {
             navigationView.getMenu().findItem(R.id.nav_play_ranking).setChecked(true);
@@ -157,6 +157,13 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
     private Runnable navigateSetting = new Runnable() {
         public void run() {
             final Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+            MainActivity.this.startActivity(intent);
+        }
+    };
+
+    private Runnable navigateEqualizer = new Runnable() {
+        public void run() {
+            final Intent intent = new Intent(MainActivity.this, EqualizerActivity.class);
             MainActivity.this.startActivity(intent);
         }
     };
@@ -303,7 +310,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         if (!isDarkTheme) {
             navigationView.getMenu().findItem(R.id.nav_library).setIcon(R.drawable.ic_music_note_black_48dp);
             navigationView.getMenu().findItem(R.id.nav_playlists).setIcon(R.drawable.ic_queue_music_black_48dp);
-            navigationView.getMenu().findItem(R.id.nav_folders).setIcon(R.drawable.ic_folder_black_48dp);
+            navigationView.getMenu().findItem(R.id.nav_equalizer).setIcon(R.drawable.ic_equalizer_black_48dp);
+//            navigationView.getMenu().findItem(R.id.nav_folders).setIcon(R.drawable.ic_folder_black_48dp);
             navigationView.getMenu().findItem(R.id.nav_favourate).setIcon(R.drawable.ic_favorite_black_48dp);
             navigationView.getMenu().findItem(R.id.nav_recent_play).setIcon(R.drawable.ic_watch_later_black_48dp);
             navigationView.getMenu().findItem(R.id.nav_recent_add).setIcon(R.drawable.ic_add_box_black_48dp);
@@ -313,7 +321,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         } else {
             navigationView.getMenu().findItem(R.id.nav_library).setIcon(R.drawable.ic_music_note_white_48dp);
             navigationView.getMenu().findItem(R.id.nav_playlists).setIcon(R.drawable.ic_queue_music_white_48dp);
-            navigationView.getMenu().findItem(R.id.nav_folders).setIcon(R.drawable.ic_folder_white_48dp);
+            navigationView.getMenu().findItem(R.id.nav_equalizer).setIcon(R.drawable.ic_equalizer_white_48dp);
+//            navigationView.getMenu().findItem(R.id.nav_folders).setIcon(R.drawable.ic_folder_white_48dp);
             navigationView.getMenu().findItem(R.id.nav_favourate).setIcon(R.drawable.ic_favorite_white_48dp);
             navigationView.getMenu().findItem(R.id.nav_recent_play).setIcon(R.drawable.ic_watch_later_white_48dp);
             navigationView.getMenu().findItem(R.id.nav_recent_add).setIcon(R.drawable.ic_add_box_white_48dp);
@@ -338,9 +347,9 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
             case R.id.nav_playlists:
                 runnable = navigatePlaylist;
                 break;
-            case R.id.nav_folders:
-                runnable = navigateFolders;
-                break;
+//            case R.id.nav_folders:
+//                runnable = navigateFolders;
+//                break;
             case R.id.nav_favourate:
                 runnable = navigateFavourate;
                 break;
@@ -355,6 +364,9 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
                 break;
             case R.id.nav_settings:
                 runnable = navigateSetting;
+                break;
+            case R.id.nav_equalizer:
+                runnable = navigateEqualizer;
                 break;
             case R.id.nav_exit:
                 this.finish();

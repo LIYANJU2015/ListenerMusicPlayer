@@ -52,7 +52,7 @@ public class BaseActivity extends ATEActivity implements ServiceConnection {
 
         mPlaybackStatus = new PlaybackStatus(this);
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= 21 && onIsStatusBarTransparent()) {
             View decorView = getWindow().getDecorView();
             int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
@@ -60,6 +60,10 @@ public class BaseActivity extends ATEActivity implements ServiceConnection {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
+    }
+
+    public boolean onIsStatusBarTransparent() {
+        return true;
     }
 
     @Override

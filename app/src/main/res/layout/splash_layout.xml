@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/logo_iv"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_splash_launcher"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        />
+
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/ad_bg_iv"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ad_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:visibility="invisible"
+        android:id="@+id/count_down_tv"
+        style="@style/Base.TextAppearance.AppCompat.Body1"
+        android:layout_margin="6dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#666666"
+        android:layout_gravity="top|right"
+        android:background="@drawable/while_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:id="@+id/ad_container_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</FrameLayout>

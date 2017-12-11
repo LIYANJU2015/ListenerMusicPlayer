@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.PersistableBundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.PopupMenu;
@@ -26,6 +27,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.appthemeengine.ATEActivity;
@@ -124,13 +126,29 @@ public class YouTubePlayerActivity extends ATEActivity {
 
     private CustomSwipeToRefresh swipeRefreshLayout;
     private View mLineView;
+    private TextView mTitleTV;
+
+    private String title;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putString("url", url);
+        outState.putString("title", title);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.youtube_player_layout);
 
-        url = getIntent().getStringExtra("url");
+        if (savedInstanceState != null) {
+            url = savedInstanceState.getString("url");
+            title = savedInstanceState.getString("title");
+        } else {
+            url = getIntent().getStringExtra("url");
+            title = getIntent().getStringExtra("title");
+        }
 
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(mOnClickListener);
@@ -139,7 +157,9 @@ public class YouTubePlayerActivity extends ATEActivity {
         mMoreImageView = (ImageView) findViewById(R.id.iv_more);
         mMoreImageView.setOnClickListener(mOnClickListener);
         mLineView = findViewById(R.id.view_line);
+        mTitleTV = (TextView)findViewById(R.id.toolbar_title);
 
+        mTitleTV.setText(title);
         mWebView = (CacheWebView) findViewById(R.id.webview);
         initSettings();
         mWebView.setWebViewClient(mWebViewClient);
@@ -306,9 +326,10 @@ public class YouTubePlayerActivity extends ATEActivity {
         overridePendingTransition(0, R.anim.slide_bottom_out);
     }
 
-    public static void launch(Activity activity, String url) {
+    public static void launch(Activity activity, String url, String title) {
         Intent intent = new Intent(activity, YouTubePlayerActivity.class);
         intent.putExtra("url", url);
+        intent.putExtra("title", title);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }

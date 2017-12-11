@@ -180,7 +180,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
                     @Override
                     public void onClick(View v) {
                         YouTubePlayerActivity.launch(activity,
-                                "https://www.youtube.com/watch?v=" + snippet.vid);
+                                "https://www.youtube.com/watch?v=" + snippet.vid, snippet.title);
                     }
                 });
             }

@@ -1,14 +1,11 @@
 package io.hefuyi.listener.ui.fragment;
 
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +30,6 @@ import io.hefuyi.listener.mvp.contract.FoldersContract;
 import io.hefuyi.listener.mvp.model.FolderInfo;
 import io.hefuyi.listener.ui.adapter.FolderAdapter;
 import io.hefuyi.listener.util.ATEUtil;
-import io.hefuyi.listener.util.DensityUtil;
 import io.hefuyi.listener.widget.DividerItemDecoration;
 import io.hefuyi.listener.widget.fastscroller.FastScrollRecyclerView;
 import rx.Subscription;
@@ -52,8 +48,6 @@ public class FoldersFragment extends Fragment implements FoldersContract.View{
     FastScrollRecyclerView recyclerView;
     @BindView(R.id.view_empty)
     View emptyView;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     private FolderAdapter mAdapter;
 
     @Override
@@ -76,7 +70,7 @@ public class FoldersFragment extends Fragment implements FoldersContract.View{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_list_layout, container, false);
+        View rootView = inflater.inflate(R.layout.folders_fragment_layout, container, false);
         ButterKnife.bind(this, rootView);
         return rootView;
     }
@@ -86,21 +80,6 @@ public class FoldersFragment extends Fragment implements FoldersContract.View{
         super.onViewCreated(view, savedInstanceState);
 
         ATE.apply(this, ATEUtil.getATEKey(getActivity()));
-
-        if (Build.VERSION.SDK_INT < 21 && view.findViewById(R.id.status_bar) != null) {
-            view.findViewById(R.id.status_bar).setVisibility(View.GONE);
-            if (Build.VERSION.SDK_INT >= 19) {
-                int statusBarHeight = DensityUtil.getStatusBarHeight(getContext());
-                view.findViewById(R.id.toolbar).setPadding(0, statusBarHeight, 0, 0);
-            }
-        }
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
-        final ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.folders);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(mAdapter);

@@ -2,6 +2,7 @@ package io.hefuyi.listener;
 
 import android.Manifest;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -36,9 +37,15 @@ public class ListenerApp extends Application {
 
     private ApplicationComponent mApplicationComponent;
 
+    public static Context sContext;
+
+    public static boolean sIsColdLaunch = false;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        sContext = this;
+        sIsColdLaunch = true;
 
 //        initLeakCanary();
 //        setCrashHandler();

@@ -107,28 +107,43 @@ public class MainFragment extends Fragment {
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
+        tabLayout.setupWithViewPager(viewPager);
+        setupViewPager(viewPager);
+        viewPager.setOffscreenPageLimit(4);
+
         switch (action) {
             case Constants.NAVIGATE_ALLSONG:
                 ab.setTitle(R.string.library);
+                if (viewPager != null) {
+                    viewPager.setCurrentItem(mPreferences.getStartPageIndex());
+                }
                 break;
             case Constants.NAVIGATE_PLAYLIST_RECENTADD:
                 ab.setTitle(R.string.recent_add);
+                if (viewPager != null && mPreferences.getStartPageIndex() == 0) {
+                    viewPager.setCurrentItem(1);
+                } else {
+                    viewPager.setCurrentItem(mPreferences.getStartPageIndex());
+                }
                 break;
             case Constants.NAVIGATE_PLAYLIST_RECENTPLAY:
                 ab.setTitle(R.string.recent_play);
+                if (viewPager != null && mPreferences.getStartPageIndex() == 0) {
+                    viewPager.setCurrentItem(1);
+                } else {
+                    viewPager.setCurrentItem(mPreferences.getStartPageIndex());
+                }
                 break;
             case Constants.NAVIGATE_PLAYLIST_FAVOURATE:
                 ab.setTitle(R.string.favourate);
+                if (viewPager != null && mPreferences.getStartPageIndex() == 0) {
+                    viewPager.setCurrentItem(1);
+                } else {
+                    viewPager.setCurrentItem(mPreferences.getStartPageIndex());
+                }
                 break;
         }
 
-        tabLayout.setupWithViewPager(viewPager);
-
-        if (viewPager != null) {
-            setupViewPager(viewPager);
-            viewPager.setOffscreenPageLimit(3);
-            viewPager.setCurrentItem(mPreferences.getStartPageIndex());
-        }
 
     }
 
@@ -138,6 +153,7 @@ public class MainFragment extends Fragment {
         adapter.addFragment(SongsFragment.newInstance(action), this.getString(R.string.songs));
         adapter.addFragment(ArtistFragment.newInstance(action), this.getString(R.string.artists));
         adapter.addFragment(AlbumFragment.newInstance(action), this.getString(R.string.albums));
+        adapter.addFragment(new FoldersFragment(), this.getString(R.string.folders));
         viewPager.setAdapter(adapter);
     }
 

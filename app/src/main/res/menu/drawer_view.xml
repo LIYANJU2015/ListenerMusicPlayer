@@ -13,10 +13,16 @@
             android:id="@+id/nav_playlists"
 
             android:title="@string/playlists" />
-        <item
-            android:id="@+id/nav_folders"
 
-            android:title="@string/folders" />
+        <item
+            android:id="@+id/nav_equalizer"
+            android:title="@string/equalizer"
+            />
+
+        <!--<item-->
+            <!--android:id="@+id/nav_folders"-->
+
+            <!--android:title="@string/folders" />-->
         <item
             android:id="@+id/nav_favourate"
 

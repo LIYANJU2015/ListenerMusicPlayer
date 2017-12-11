@@ -57,6 +57,12 @@ public class HomePresenter implements HomeContract.Presenter {
                             mView.showYoutubeData(youTubeVideos);
                         }
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mView.showEmptyView();
+                    }
                 });
         mCompositeSubscription.add(subscription);
 
