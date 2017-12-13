@@ -21,6 +21,7 @@ android {
         ndk {
             abiFilters "armeabi", "armeabi-v7a" ,"x86"
         }
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -34,6 +35,12 @@ android {
             versionNameSuffix "_debug"
         }
     }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
 }
 
 dependencies {
@@ -42,6 +49,11 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
+
+    compile 'com.android.support:multidex:1.0.0'
+    compile(name: 'admodule-release', ext: 'aar')
+    compile 'com.google.android.gms:play-services-ads:10.2.4'
+    compile 'com.facebook.android:audience-network-sdk:4.+'
 
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'

@@ -76,7 +76,7 @@ public class QuickControlsPresenter implements QuickControlsContract.Presenter {
                     mView.setPlayPauseButton(true);
                 }
             }
-        }.execute();
+        }.executeOnExecutor(ListenerUtil.sExecutorService);
 
     }
 

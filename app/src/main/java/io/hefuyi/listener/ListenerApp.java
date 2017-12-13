@@ -8,7 +8,9 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.support.multidex.MultiDexApplication;
 
+import com.admodule.AdModule;
 import com.afollestad.appthemeengine.ATE;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -33,7 +35,7 @@ import rx.schedulers.Schedulers;
  * Created by hefuyi on 2016/10/4.
  */
 
-public class ListenerApp extends Application {
+public class ListenerApp extends MultiDexApplication implements AdModule.AdCallBack{
 
     private ApplicationComponent mApplicationComponent;
 
@@ -56,9 +58,62 @@ public class ListenerApp extends Application {
         PermissionManager.init(this);
         updataMedia();
         setupATE();
+
+        AdModule.init(this);
+
     }
 
-//    private void initLeakCanary() {
+    @Override
+    public Application getApplication() {
+        return this;
+    }
+
+    @Override
+    public String getAppId() {
+        return null;
+    }
+
+    @Override
+    public boolean isAdDebug() {
+        return false;
+    }
+
+    @Override
+    public boolean isLogDebug() {
+        return false;
+    }
+
+    @Override
+    public String getAdMobNativeAdId() {
+        return null;
+    }
+
+    @Override
+    public String getBannerAdId() {
+        return null;
+    }
+
+    @Override
+    public String getInterstitialAdId() {
+        return null;
+    }
+
+    @Override
+    public String getTestDevice() {
+        return null;
+    }
+
+    @Override
+    public String getRewardedVideoAdId() {
+        return null;
+    }
+
+    @Override
+    public String getFBNativeAdId() {
+        return "200998730474227_201002143807219";
+    }
+
+    //    private void initLeakCanary() {
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
 //            return;
 //        }

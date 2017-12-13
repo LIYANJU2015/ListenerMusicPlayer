@@ -15,10 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.admodule.AdModule;
 import com.bumptech.glide.Glide;
+import com.facebook.ads.AdChoicesView;
+import com.facebook.ads.MediaView;
+import com.facebook.ads.NativeAd;
 import com.paginate.Paginate;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -42,6 +47,7 @@ import io.hefuyi.listener.mvp.contract.HomeContract;
 import io.hefuyi.listener.mvp.model.YouTubeVideos;
 import io.hefuyi.listener.ui.activity.YouTubePlayerActivity;
 import io.hefuyi.listener.util.ATEUtil;
+import io.hefuyi.listener.util.AdViewWrapperAdapter;
 import io.hefuyi.listener.util.FileUtil;
 import io.hefuyi.listener.util.HomeDiffCallBack;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -128,6 +134,10 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
 
     private boolean mIsLoadingMore;
 
+    private AdViewWrapperAdapter adViewWrapperAdapter;
+
+    private  RecyclerView.Adapter currentAdapter;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -141,6 +151,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
 
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.setHasFixedSize(true);
+
         mCommonAdapter = new CommonAdapter<YouTubeVideos.Snippet>(mContext,R.layout.home_video_item, mDatas) {
             @Override
             protected void convert(ViewHolder holder,  final YouTubeVideos.Snippet snippet, int position) {
@@ -185,12 +196,63 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
                 });
             }
         };
-        recyclerView.setAdapter(mCommonAdapter);
 
-        mPaginate = Paginate.with(recyclerView, this)
-                .setLoadingTriggerThreshold(2)
-                .build();
-        mPaginate.setHasMoreDataToLoad(false);
+        setAapter();
+    }
+
+    public void setAapter() {
+        if (currentAdapter == null) {
+            NativeAd nativeAd = AdModule.getInstance().getFacebookAd().getNativeAd();
+            if (nativeAd != null && nativeAd.isAdLoaded()) {
+                adViewWrapperAdapter = new AdViewWrapperAdapter(mCommonAdapter);
+                adViewWrapperAdapter.addAdView(22, new AdViewWrapperAdapter.
+                        AdViewItem(setUpNativeAdView(nativeAd), 1));
+                currentAdapter = adViewWrapperAdapter;
+            } else {
+                currentAdapter = mCommonAdapter;
+            }
+
+            recyclerView.setAdapter(currentAdapter);
+
+            mPaginate = Paginate.with(recyclerView, this)
+                    .setLoadingTriggerThreshold(2)
+                    .build();
+            mPaginate.setHasMoreDataToLoad(false);
+        }
+    }
+
+    private View setUpNativeAdView(NativeAd nativeAd) {
+        nativeAd.unregisterView();
+
+        View adView = LayoutInflater.from(activity).inflate(R.layout.home_video_ad_item, null);
+
+        FrameLayout adChoicesFrame = (FrameLayout)adView.findViewById(R.id.fb_adChoices);
+        ImageView nativeAdIcon = (ImageView) adView.findViewById(R.id.fb_half_icon);
+        TextView nativeAdTitle = (TextView) adView.findViewById(R.id.title);
+        TextView nativeAdBody = (TextView) adView.findViewById(R.id.text);
+        TextView nativeAdCallToAction = (TextView) adView.findViewById(R.id.fb_half_download);
+        MediaView nativeAdMedia = (MediaView) adView.findViewById(com.admodule.R.id.fb_half_mv);
+
+        nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
+        nativeAdTitle.setText(nativeAd.getAdTitle());
+        nativeAdBody.setText(nativeAd.getAdBody());
+
+        // Downloading and setting the ad icon.
+        NativeAd.Image adIcon = nativeAd.getAdIcon();
+        NativeAd.downloadAndDisplayImage(adIcon, nativeAdIcon);
+
+        // Download and setting the cover image.
+        NativeAd.Image adCoverImage = nativeAd.getAdCoverImage();
+        nativeAdMedia.setNativeAd(nativeAd);
+
+        // Add adChoices icon
+        AdChoicesView adChoicesView = new AdChoicesView(activity, nativeAd, true);
+        adChoicesFrame.addView(adChoicesView, 0);
+        adChoicesFrame.setVisibility(View.VISIBLE);
+
+        nativeAd.registerViewForInteraction(adView);
+
+        return adView;
     }
 
     @Override

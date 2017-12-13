@@ -61,7 +61,7 @@
     <string name="number_songs_delete"><xliff:g id="songs_to_delete">%d</xliff:g> songs were deleted.</string>
 
 
-    <string name="app_name">Listener</string>
+    <string name="app_name">Music Tube</string>
     <string name="durationformatshort" translatable="false"><xliff:g id="format">%2$d:%3$02d</xliff:g></string>
     <string name="durationformatlong" translatable="false"><xliff:g id="format">%1$d:%2$02d:%3$02d</xliff:g></string>
 

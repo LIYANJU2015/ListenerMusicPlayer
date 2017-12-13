@@ -30,6 +30,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.hefuyi.listener.Constants;
+import io.hefuyi.listener.ListenerApp;
 import io.hefuyi.listener.MusicPlayer;
 import io.hefuyi.listener.R;
 import io.hefuyi.listener.RxBus;
@@ -258,7 +259,7 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
             navigateLibrary.run();
         }
 
-        new initQuickControls().execute("");
+        new initQuickControls().executeOnExecutor(ListenerUtil.sExecutorService);
     }
 
     private void checkPermissionAndThenLoad() {

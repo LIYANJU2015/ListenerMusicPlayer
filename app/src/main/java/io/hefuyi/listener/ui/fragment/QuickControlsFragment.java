@@ -32,6 +32,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.admodule.LogUtils;
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -611,6 +612,7 @@ public class QuickControlsFragment extends Fragment implements QuickControlsCont
     }
 
     private void subscribeMetaChangedEvent() {
+        LogUtils.v("player", "subscribeMetaChangedEvent");
         Subscription subscription = RxBus.getInstance()
                 .toObservable(MetaChangedEvent.class)
                 .subscribeOn(Schedulers.io())

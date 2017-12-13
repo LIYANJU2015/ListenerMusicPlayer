@@ -80,7 +80,7 @@ public class PreferencesUtility {
                 editor.apply();
                 return null;
             }
-        }.execute();
+        }.executeOnExecutor(ListenerUtil.sExecutorService);
     }
 
     private void setSortOrder(final String key, final String value) {

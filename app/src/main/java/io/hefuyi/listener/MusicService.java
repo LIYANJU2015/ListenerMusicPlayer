@@ -1155,7 +1155,12 @@ public class MusicService extends Service {
                         .build());
             }
         } else if (what.equals(META_CHANGED) || what.equals(QUEUE_CHANGED)) { //当前播放歌曲的信息或者播放队列改变
-            Bitmap albumArt = ImageLoader.getInstance().loadImageSync(ListenerUtil.getAlbumArtUri(getAlbumId()).toString());
+            Bitmap albumArt = null;
+            try {
+                albumArt = ImageLoader.getInstance().loadImageSync(ListenerUtil.getAlbumArtUri(getAlbumId()).toString());
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
             if (albumArt != null) {
 
                 Bitmap.Config config = albumArt.getConfig();
@@ -1204,8 +1209,12 @@ public class MusicService extends Service {
         Intent nowPlayingIntent = NavigationUtil.getNowPlayingIntent(this);
         PendingIntent clickIntent = PendingIntent.getActivity(this, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Bitmap artwork;
-        artwork = ImageLoader.getInstance().loadImageSync(ListenerUtil.getAlbumArtUri(getAlbumId()).toString());
+        Bitmap artwork = null;
+        try {
+            artwork = ImageLoader.getInstance().loadImageSync(ListenerUtil.getAlbumArtUri(getAlbumId()).toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (artwork == null) {
             artwork = ImageLoader.getInstance().loadImageSync("drawable://" + R.drawable.default_album_art);

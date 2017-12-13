@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.admodule.AdModule;
+import com.admodule.adfb.IFacebookAd;
 import com.githang.statusbar.StatusBarCompat;
 
 import io.hefuyi.listener.ListenerApp;
@@ -26,7 +28,7 @@ import io.hefuyi.listener.R;
  * Created by liyanju on 2017/12/11.
  */
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity implements IFacebookAd.FacebookAdListener{
 
     private LinearLayout adContainerLinear;
 
@@ -63,12 +65,28 @@ public class SplashActivity extends AppCompatActivity {
         if (adBgIV != null) {
             logoIV.animate().cancel();
         }
+        AdModule.getInstance().getFacebookAd().cancelLoadListener();
     }
 
     @Override
     public void finish() {
         super.finish();
         overridePendingTransition(0, R.anim.alpha_out);
+    }
+
+    @Override
+    public void onLoadedAd(View view) {
+        adView = view;
+    }
+
+    @Override
+    public void onStartLoadAd(View view) {
+
+    }
+
+    @Override
+    public void onLoadAdFailed(int i, String s) {
+
     }
 
     @Override
@@ -80,6 +98,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.splash_layout);
 
         if (!ListenerApp.sIsColdLaunch) {
+            AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
             startMain();
             return;
         }
@@ -90,7 +109,8 @@ public class SplashActivity extends AppCompatActivity {
         adBgIV = (ImageView) findViewById(R.id.ad_bg_iv);
         logoIV = (ImageView) findViewById(R.id.logo_iv);
 
-        adView = new TextView(this);
+        AdModule.getInstance().getFacebookAd().setLoadListener(this);
+        AdModule.getInstance().getFacebookAd().loadAd(false, "200998730474227_201002143807219");
 
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(logoIV, "Alpha", 0f, 1f);
         objectAnimator.setDuration(3500);
@@ -111,6 +131,8 @@ public class SplashActivity extends AppCompatActivity {
                                     startCountDown();
                                     adContainerLinear.removeAllViews();
                                     adContainerLinear.addView(adView);
+                                    AdModule.getInstance().getFacebookAd().cancelLoadListener();
+                                    AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
                                 }
                             }).start();
                         } else {
