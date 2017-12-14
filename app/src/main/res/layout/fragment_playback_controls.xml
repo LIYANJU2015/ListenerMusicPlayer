@@ -132,7 +132,7 @@
             android:clickable="true"
             android:foreground="?android:selectableItemBackground"
             android:layout_toLeftOf="@id/next"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="10dp"
             playpauseview:isCircleDraw="true"
             playpauseview:circleAlpha="0"/>
 

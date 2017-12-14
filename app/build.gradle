@@ -7,7 +7,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
     defaultConfig {
-        applicationId "io.hefuyi.listener"
+        applicationId "com.gomusic.musictube1"
         minSdkVersion 16
         targetSdkVersion 22
         renderscriptTargetApi 25
@@ -24,11 +24,22 @@ android {
         multiDexEnabled true
     }
 
+    signingConfigs {
+        release {
+            storeFile file("key_store")
+            storePassword "zxcv1234"
+            keyAlias "asdf"
+            keyPassword "zxcv1234"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false
@@ -50,6 +61,7 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
 
+    compile 'com.facebook.android:facebook-android-sdk:4.11.0'
     compile 'com.android.support:multidex:1.0.0'
     compile(name: 'admodule-release', ext: 'aar')
     compile 'com.google.android.gms:play-services-ads:10.2.4'

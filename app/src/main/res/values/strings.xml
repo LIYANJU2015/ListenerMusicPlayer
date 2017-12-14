@@ -114,6 +114,9 @@
     <string name="copy_link">Copy link</string>
     <string name="default_browser">Open in browser</string>
     <string name="equalizer">Equalizer</string>
-    <string name="no_audio_ID">"Play a song first, then try again."</string>
+    <string name="no_audio_ID">Play a song first, then try again.</string>
+
+    <string name="facebook_app_id">200998730474227</string>
+    <string name="fb_login_protocol_scheme">fb200998730474227</string>
 
 </resources>

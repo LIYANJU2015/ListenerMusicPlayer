@@ -12,6 +12,8 @@ import android.support.multidex.MultiDexApplication;
 
 import com.admodule.AdModule;
 import com.afollestad.appthemeengine.ATE;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -61,6 +63,8 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
 
         AdModule.init(this);
 
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
     }
 
     @Override
