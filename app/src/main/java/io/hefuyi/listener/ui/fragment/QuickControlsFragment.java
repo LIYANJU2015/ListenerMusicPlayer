@@ -277,7 +277,7 @@ public class QuickControlsFragment extends Fragment implements QuickControlsCont
     @Override
     public void showLyric(File file) {
         if (file == null) {
-            mLyricView.reset("暂无歌词");
+            mLyricView.reset("No lyrics");
         } else {
             mLyricView.setLyricFile(file, "UTF-8");
         }
@@ -293,39 +293,42 @@ public class QuickControlsFragment extends Fragment implements QuickControlsCont
     }
 
     private void setUpTimelyView() {
-        if (timelyView11 != null) {
-            String time = ListenerUtil.makeShortTimeString(getActivity(), MusicPlayer.position() / 1000);
-            if (time.length() < 5) {
-                timelyView11.setVisibility(View.GONE);
-                timelyView12.setVisibility(View.GONE);
-                hourColon.setVisibility(View.GONE);
+        try {
+            if (timelyView11 != null) {
+                String time = ListenerUtil.makeShortTimeString(getActivity(), MusicPlayer.position() / 1000);
+                if (time.length() < 5) {
+                    timelyView11.setVisibility(View.GONE);
+                    timelyView12.setVisibility(View.GONE);
+                    hourColon.setVisibility(View.GONE);
 
-                changeDigit(timelyView13, time.charAt(0) - '0');
-                changeDigit(timelyView14, time.charAt(2) - '0');
-                changeDigit(timelyView15, time.charAt(3) - '0');
+                    changeDigit(timelyView13, time.charAt(0) - '0');
+                    changeDigit(timelyView14, time.charAt(2) - '0');
+                    changeDigit(timelyView15, time.charAt(3) - '0');
 
-            } else if (time.length() == 5) {
-                timelyView12.setVisibility(View.VISIBLE);
-                changeDigit(timelyView12, time.charAt(0) - '0');
-                changeDigit(timelyView13, time.charAt(1) - '0');
-                changeDigit(timelyView14, time.charAt(3) - '0');
-                changeDigit(timelyView15, time.charAt(4) - '0');
-            } else {
-                timelyView11.setVisibility(View.VISIBLE);
-                hourColon.setVisibility(View.VISIBLE);
-                changeDigit(timelyView11, time.charAt(0) - '0');
-                changeDigit(timelyView12, time.charAt(2) - '0');
-                changeDigit(timelyView13, time.charAt(3) - '0');
-                changeDigit(timelyView14, time.charAt(5) - '0');
-                changeDigit(timelyView15, time.charAt(6) - '0');
+                } else if (time.length() == 5) {
+                    timelyView12.setVisibility(View.VISIBLE);
+                    changeDigit(timelyView12, time.charAt(0) - '0');
+                    changeDigit(timelyView13, time.charAt(1) - '0');
+                    changeDigit(timelyView14, time.charAt(3) - '0');
+                    changeDigit(timelyView15, time.charAt(4) - '0');
+                } else {
+                    timelyView11.setVisibility(View.VISIBLE);
+                    hourColon.setVisibility(View.VISIBLE);
+                    changeDigit(timelyView11, time.charAt(0) - '0');
+                    changeDigit(timelyView12, time.charAt(2) - '0');
+                    changeDigit(timelyView13, time.charAt(3) - '0');
+                    changeDigit(timelyView14, time.charAt(5) - '0');
+                    changeDigit(timelyView15, time.charAt(6) - '0');
+                }
             }
-        }
 
-        if (timelyView11 != null) {
-            mElapsedTimeHandler = new Handler();
-            mElapsedTimeHandler.postDelayed(mUpdateElapsedTime, 600);
+            if (timelyView11 != null) {
+                mElapsedTimeHandler = new Handler();
+                mElapsedTimeHandler.postDelayed(mUpdateElapsedTime, 600);
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
-
     }
 
     private void setUpPopupMenu(ImageView popupMenu) {
@@ -637,9 +640,13 @@ public class QuickControlsFragment extends Fragment implements QuickControlsCont
     }
 
     private void changeDigit(TimelyView tv, int end) {
-        ObjectAnimator obja = tv.animate(end);
-        obja.setDuration(400);
-        obja.start();
+        try {
+            ObjectAnimator obja = tv.animate(end);
+            obja.setDuration(400);
+            obja.start();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     private void setTimelyColor(@ColorInt int color) {
@@ -657,7 +664,7 @@ public class QuickControlsFragment extends Fragment implements QuickControlsCont
             ObjectAnimator obja = tv.animate(start, end);
             obja.setDuration(400);
             obja.start();
-        } catch (InvalidParameterException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }

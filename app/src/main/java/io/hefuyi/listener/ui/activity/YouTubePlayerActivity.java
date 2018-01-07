@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.admodule.AdModule;
 import com.afollestad.appthemeengine.ATEActivity;
 
 import java.io.File;
@@ -276,6 +277,7 @@ public class YouTubePlayerActivity extends ATEActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AdModule.getInstance().getAdMob().showInterstitialAd();
         try {
             clearWebView(mWebView);
         } catch (Throwable e) {

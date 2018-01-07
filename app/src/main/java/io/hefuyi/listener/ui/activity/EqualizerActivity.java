@@ -405,7 +405,7 @@ public class EqualizerActivity extends BaseActivity {
                 try {
                     bassBoost.setStrength(bassStrength);
                     sEqualizerModel.setBassStrength(bassStrength);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
             }

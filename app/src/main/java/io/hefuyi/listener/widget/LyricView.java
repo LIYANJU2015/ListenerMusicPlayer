@@ -71,7 +71,7 @@ public class LyricView extends View {
 
     private LyricInfo mLyricInfo;
     private String mDefaultTime = "00:00";
-    private String mDefaultHint = "暂无歌词";
+    private String mDefaultHint = "No lyrics";
     private Paint mTextPaint, mBtnPaint, mIndicatorPaint;
 
     private OnPlayerClickListener mClickListener;
@@ -643,7 +643,7 @@ public class LyricView extends View {
                 e.printStackTrace();
             }
         } else {
-            mDefaultHint = "暂无歌词";
+            mDefaultHint = "No lyrics";
             invalidateView();
         }
     }
@@ -829,7 +829,7 @@ public class LyricView extends View {
                 e.printStackTrace();
             }
         } else {
-            mDefaultHint = "暂无歌词";
+            mDefaultHint = "No lyrics";
             invalidateView();
         }
     }

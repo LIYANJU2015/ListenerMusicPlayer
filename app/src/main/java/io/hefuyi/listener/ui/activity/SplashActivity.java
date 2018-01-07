@@ -28,19 +28,17 @@ import io.hefuyi.listener.R;
  * Created by liyanju on 2017/12/11.
  */
 
-public class SplashActivity extends AppCompatActivity implements IFacebookAd.FacebookAdListener{
+public class SplashActivity extends AppCompatActivity implements IFacebookAd.FacebookAdListener {
 
     private LinearLayout adContainerLinear;
 
     private TextView countDownTV;
 
-    private ImageView adBgIV;
-
     private ImageView logoIV;
 
     private View adView;
 
-    private CountDownTimer countDownTimer  = new CountDownTimer(6*1000, 1000) {
+    private CountDownTimer countDownTimer = new CountDownTimer(6 * 1000, 1000) {
         @Override
         public void onTick(long millisUntilFinished) {
             countDownTV.setText(String.valueOf(millisUntilFinished / 1000) + " SKIP");
@@ -59,10 +57,7 @@ public class SplashActivity extends AppCompatActivity implements IFacebookAd.Fac
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-        if (adBgIV != null) {
-            adBgIV.animate().cancel();
-        }
-        if (adBgIV != null) {
+        if (logoIV != null) {
             logoIV.animate().cancel();
         }
         AdModule.getInstance().getFacebookAd().cancelLoadListener();
@@ -98,6 +93,7 @@ public class SplashActivity extends AppCompatActivity implements IFacebookAd.Fac
         setContentView(R.layout.splash_layout);
 
         if (!ListenerApp.sIsColdLaunch) {
+            ListenerApp.sIsColdLaunch = false;
             AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
             startMain();
             return;
@@ -106,7 +102,12 @@ public class SplashActivity extends AppCompatActivity implements IFacebookAd.Fac
 
         adContainerLinear = (LinearLayout) findViewById(R.id.ad_container_frame);
         countDownTV = (TextView) findViewById(R.id.count_down_tv);
-        adBgIV = (ImageView) findViewById(R.id.ad_bg_iv);
+        countDownTV.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startMain();
+            }
+        });
         logoIV = (ImageView) findViewById(R.id.logo_iv);
 
         AdModule.getInstance().getFacebookAd().setLoadListener(this);
@@ -116,30 +117,24 @@ public class SplashActivity extends AppCompatActivity implements IFacebookAd.Fac
         objectAnimator.setDuration(3500);
         objectAnimator.setInterpolator(new AccelerateInterpolator());
         objectAnimator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        if (adView != null) {
-                            logoIV.animate().alpha(0f).setDuration(100)
-                                    .setListener(null).start();
-                            adBgIV.setVisibility(View.VISIBLE);
-                            adBgIV.setAlpha(0f);
-                            adBgIV.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    startCountDown();
-                                    adContainerLinear.removeAllViews();
-                                    adContainerLinear.addView(adView);
-                                    AdModule.getInstance().getFacebookAd().cancelLoadListener();
-                                    AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
-                                }
-                            }).start();
-                        } else {
-                            startMain();
-                        }
-                    }
-                });
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (adView != null) {
+                    logoIV.animate().alpha(0f).setDuration(100)
+                            .setListener(null).start();
+
+                    super.onAnimationEnd(animation);
+                    startCountDown();
+                    adContainerLinear.removeAllViews();
+                    adContainerLinear.addView(adView);
+                    AdModule.getInstance().getFacebookAd().cancelLoadListener();
+                    AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
+                } else {
+                    startMain();
+                }
+            }
+        });
         objectAnimator.start();
     }
 

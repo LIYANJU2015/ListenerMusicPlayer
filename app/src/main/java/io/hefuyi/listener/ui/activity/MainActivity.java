@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.admodule.AdModule;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.bumptech.glide.Glide;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -239,6 +240,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
             }, 350);
         }
         subscribeMetaChangedEvent();
+
+        AdModule.getInstance().getAdMob().requestNewInterstitial();
 
     }
 

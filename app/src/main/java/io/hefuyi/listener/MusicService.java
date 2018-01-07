@@ -1086,53 +1086,57 @@ public class MusicService extends Service {
      * @param what
      */
     private void notifyChange(final String what) {
-        if (D) Log.d(TAG, "notifyChange: what = " + what);
+        try {
+            if (D) Log.d(TAG, "notifyChange: what = " + what);
 
-        // Update the lockscreen controls
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            updateMediaSession(what);
+            // Update the lockscreen controls
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                updateMediaSession(what);
 
-        if (what.equals(POSITION_CHANGED)) {
-            return;
-        }
-
-        final Intent intent = new Intent(what);
-        intent.putExtra("id", getAudioId());
-        intent.putExtra("artist", getArtistName());
-        intent.putExtra("album", getAlbumName());
-        intent.putExtra("track", getTrackName());
-        intent.putExtra("playing", isPlaying());
-
-        sendStickyBroadcast(intent);
-
-        final Intent musicIntent = new Intent(intent);
-        musicIntent.setAction(what.replace(LISTENER_PACKAGE_NAME, MUSIC_PACKAGE_NAME));
-        sendStickyBroadcast(musicIntent);
-
-        if (what.equals(META_CHANGED)) {
-
-            mRecentStore.addSongId(getAudioId());
-
-        } else if (what.equals(QUEUE_CHANGED)) {
-            saveQueue(true);
-            if (isPlaying()) {//如果正在播放,则提前设置好下首播放的datasource
-                if (mNextPlayPos >= 0 && mNextPlayPos < mPlaylist.size()
-                        && getShuffleMode() != SHUFFLE_NONE) {
-                    setNextTrack(mNextPlayPos);
-                } else { //SHUFFLE_NONE直接播放下一首
-                    setNextTrack();
-                }
-            } else {
-                if (mPlaylist.size() == 0) {
-                    cancelNotification();
-                }
+            if (what.equals(POSITION_CHANGED)) {
+                return;
             }
-        } else { // REPEATMODE_CHANGE、PLAYSTATE_CHANGE等
-            saveQueue(false);
-        }
 
-        if (what.equals(PLAYSTATE_CHANGED)) {
-            updateNotification();
+            final Intent intent = new Intent(what);
+            intent.putExtra("id", getAudioId());
+            intent.putExtra("artist", getArtistName());
+            intent.putExtra("album", getAlbumName());
+            intent.putExtra("track", getTrackName());
+            intent.putExtra("playing", isPlaying());
+
+            sendStickyBroadcast(intent);
+
+            final Intent musicIntent = new Intent(intent);
+            musicIntent.setAction(what.replace(LISTENER_PACKAGE_NAME, MUSIC_PACKAGE_NAME));
+            sendStickyBroadcast(musicIntent);
+
+            if (what.equals(META_CHANGED)) {
+
+                mRecentStore.addSongId(getAudioId());
+
+            } else if (what.equals(QUEUE_CHANGED)) {
+                saveQueue(true);
+                if (isPlaying()) {//如果正在播放,则提前设置好下首播放的datasource
+                    if (mNextPlayPos >= 0 && mNextPlayPos < mPlaylist.size()
+                            && getShuffleMode() != SHUFFLE_NONE) {
+                        setNextTrack(mNextPlayPos);
+                    } else { //SHUFFLE_NONE直接播放下一首
+                        setNextTrack();
+                    }
+                } else {
+                    if (mPlaylist.size() == 0) {
+                        cancelNotification();
+                    }
+                }
+            } else { // REPEATMODE_CHANGE、PLAYSTATE_CHANGE等
+                saveQueue(false);
+            }
+
+            if (what.equals(PLAYSTATE_CHANGED)) {
+                updateNotification();
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
 
     }

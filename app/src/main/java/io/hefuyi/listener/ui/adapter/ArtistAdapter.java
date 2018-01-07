@@ -134,14 +134,22 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder
                                 ArtistArt artistArt = new ArtistArt(artworks.get(0).mUrl, artworks.get(1).mUrl,
                                         artworks.get(2).mUrl, artworks.get(3).mUrl);
                                 PreferencesUtility.getInstance(mContext).setArtistArt(localItem.id, new Gson().toJson(artistArt));
-                                loadArtistArt(artistArt, itemHolder);
+                                try {
+                                    loadArtistArt(artistArt, itemHolder);
+                                } catch (Throwable e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     });
 
         }else {
             ArtistArt artistArt = new Gson().fromJson(artistArtJson, ArtistArt.class);
-            loadArtistArt(artistArt, itemHolder);
+            try {
+                loadArtistArt(artistArt, itemHolder);
+            } catch (Throwable e){
+                e.printStackTrace();
+            }
         }
 
         if (ListenerUtil.isLollipop())

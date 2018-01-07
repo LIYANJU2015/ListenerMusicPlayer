@@ -16,6 +16,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,10 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
+
+        AdModule.getInstance().getAdMob().initInterstitialAd();
+
+        CrashReport.initCrashReport(getApplicationContext());
     }
 
     @Override
@@ -74,7 +79,7 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
 
     @Override
     public String getAppId() {
-        return null;
+        return "ca-app-pub-9880857526519562~2662504827";
     }
 
     @Override
@@ -94,12 +99,12 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
 
     @Override
     public String getBannerAdId() {
-        return null;
+        return "ca-app-pub-9880857526519562/1896218069";
     }
 
     @Override
     public String getInterstitialAdId() {
-        return null;
+        return "ca-app-pub-9880857526519562/3784014804";
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,15 +21,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.admodule.AdModule;
+import com.admodule.admob.AdMobBanner;
 import com.bumptech.glide.Glide;
 import com.facebook.ads.AdChoicesView;
 import com.facebook.ads.MediaView;
 import com.facebook.ads.NativeAd;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdView;
 import com.paginate.Paginate;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -37,7 +41,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.hefuyi.listener.ListenerApp;
 import io.hefuyi.listener.R;
-
 import io.hefuyi.listener.injector.component.ApplicationComponent;
 import io.hefuyi.listener.injector.component.DaggerHomeComponent;
 import io.hefuyi.listener.injector.component.HomeComponent;
@@ -78,8 +81,6 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
     private Context mContext;
 
     private Activity activity;
-
-    private CommonAdapter mCommonAdapter;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -142,17 +143,15 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (mDatas.size() == 0) {
-            progressBar.setVisibility(View.VISIBLE);
-            mPresenter.requestYoutube(sNextPageToken, "10");
-        }
+        initAdBannerView();
+
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeColors(ATEUtil.getThemePrimaryColor(mContext));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.setHasFixedSize(true);
 
-        mCommonAdapter = new CommonAdapter<YouTubeVideos.Snippet>(mContext,R.layout.home_video_item, mDatas) {
+        CommonAdapter  commonAdapter = new CommonAdapter<YouTubeVideos.Snippet>(mContext,R.layout.home_video_item, mDatas) {
             @Override
             protected void convert(ViewHolder holder,  final YouTubeVideos.Snippet snippet, int position) {
                 ImageView imageView = holder.getView(R.id.img);
@@ -197,28 +196,72 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
             }
         };
 
-        setAapter();
+        adViewWrapperAdapter = new AdViewWrapperAdapter(commonAdapter);
+        recyclerView.setAdapter(adViewWrapperAdapter);
+
+        mPaginate = Paginate.with(recyclerView, this)
+                .setLoadingTriggerThreshold(2)
+                .build();
+        mPaginate.setHasMoreDataToLoad(false);
+
+        if (mDatas.size() == 0) {
+            progressBar.setVisibility(View.VISIBLE);
+            mPresenter.requestYoutube(sNextPageToken, "10");
+        }
     }
 
-    public void setAapter() {
-        if (currentAdapter == null) {
-            NativeAd nativeAd = AdModule.getInstance().getFacebookAd().getNativeAd();
-            if (nativeAd != null && nativeAd.isAdLoaded()) {
-                adViewWrapperAdapter = new AdViewWrapperAdapter(mCommonAdapter);
-                adViewWrapperAdapter.addAdView(22, new AdViewWrapperAdapter.
-                        AdViewItem(setUpNativeAdView(nativeAd), 1));
-                currentAdapter = adViewWrapperAdapter;
-            } else {
-                currentAdapter = mCommonAdapter;
+
+    private AdMobBanner adView;
+
+    private void initAdBannerView() {
+        adView = AdModule.getInstance().getAdMob().createBannerAdView();
+        adView.setAdListener(new AdListener(){
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                if (!isAdded() || adView == null) {
+                    return;
+                }
+
+                if (adViewWrapperAdapter != null && !adViewWrapperAdapter.isAddAdView()
+                        && adViewWrapperAdapter.getItemCount() > 3) {
+                    adView.getAdView().setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
+                            RecyclerView.LayoutParams.WRAP_CONTENT));
+                    adViewWrapperAdapter.addAdView(22, new AdViewWrapperAdapter.
+                            AdViewItem(adView.getAdView(), 1));
+
+                    adViewWrapperAdapter.notifyItemInserted(1);
+                }
             }
+        });
+        adView.getAdView().loadAd(AdModule.getInstance().getAdMob().createAdRequest());
+    }
 
-            recyclerView.setAdapter(currentAdapter);
-
-            mPaginate = Paginate.with(recyclerView, this)
-                    .setLoadingTriggerThreshold(2)
-                    .build();
-            mPaginate.setHasMoreDataToLoad(false);
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adView != null) {
+            adView.resume();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (adView != null) {
+            adView.pause();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (adView != null) {
+            adView.destroy();
+            adView = null;
+        }
+
+        mPresenter.unsubscribe();
     }
 
     private View setUpNativeAdView(NativeAd nativeAd) {
@@ -226,10 +269,10 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
 
         View adView = LayoutInflater.from(activity).inflate(R.layout.home_video_ad_item, null);
 
-        FrameLayout adChoicesFrame = (FrameLayout)adView.findViewById(R.id.fb_adChoices);
+        FrameLayout adChoicesFrame = (FrameLayout) adView.findViewById(R.id.fb_adChoices);
         ImageView nativeAdIcon = (ImageView) adView.findViewById(R.id.fb_half_icon);
-        TextView nativeAdTitle = (TextView) adView.findViewById(R.id.title);
-        TextView nativeAdBody = (TextView) adView.findViewById(R.id.text);
+        TextView nativeAdTitle = (TextView) adView.findViewById(R.id.fb_banner_title);
+        TextView nativeAdBody = (TextView) adView.findViewById(R.id.fb_banner_desc);
         TextView nativeAdCallToAction = (TextView) adView.findViewById(R.id.fb_half_download);
         MediaView nativeAdMedia = (MediaView) adView.findViewById(com.admodule.R.id.fb_half_mv);
 
@@ -261,6 +304,12 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
         if (mPaginate != null) {
             mPaginate.unbind();
         }
+        AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
+        AdModule.getInstance().getAdMob().requestNewInterstitial();
+
+        if (adView != null) {
+            adView.destroy();
+        }
     }
 
     @Override
@@ -273,11 +322,6 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
         return mIsLoadedAll;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mPresenter.unsubscribe();
-    }
 
     public void injectDependences() {
         ApplicationComponent applicationComponent = ((ListenerApp) getActivity().getApplication()).getApplicationComponent();
@@ -301,7 +345,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
 
     @Override
     public void showYoutubeData(YouTubeVideos youTubeVideos) {
-        if (activity == null || activity.isFinishing()) {
+        if (youTubeVideos == null || activity == null || activity.isFinishing()) {
             return;
         }
 
@@ -313,27 +357,23 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
         mIsLoadingMore = false;
         mIsLoadedAll = TextUtils.isEmpty(youTubeVideos.nextPageToken);
 
-        final ArrayList<YouTubeVideos.Snippet> newDatas = new ArrayList<>();
-        newDatas.addAll(mDatas);
-        newDatas.addAll(youTubeVideos.items);
+        NativeAd nativeAd = AdModule.getInstance().getFacebookAd().getNativeAd();
+        if (nativeAd != null && nativeAd.isAdLoaded() && !adViewWrapperAdapter.isAddAdView()) {
+            adViewWrapperAdapter.addAdView(22, new AdViewWrapperAdapter.
+                    AdViewItem(setUpNativeAdView(nativeAd), 1));
+            currentAdapter = adViewWrapperAdapter;
+        }
 
-        new AsyncTask<ArrayList<YouTubeVideos.Snippet>, Void, DiffUtil.DiffResult>(){
-            @Override
-            protected DiffUtil.DiffResult doInBackground(ArrayList<YouTubeVideos.Snippet>[] arrayLists) {
-                return DiffUtil.calculateDiff(new HomeDiffCallBack(mDatas, arrayLists[0]), true);
-            }
-
-            @Override
-            protected void onPostExecute(DiffUtil.DiffResult diffResult) {
-                super.onPostExecute(diffResult);
-                diffResult.dispatchUpdatesTo(mCommonAdapter);
-                if (swipeRefreshLayout.isRefreshing()) {
-                    swipeRefreshLayout.setRefreshing(false);
-                    mDatas.clear();
-                }
-                mDatas.addAll(newDatas);
-            }
-        }.execute(newDatas);
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+            mDatas.clear();
+            mDatas.addAll(youTubeVideos.items);
+            adViewWrapperAdapter.notifyDataSetChanged();
+        } else {
+            int positonStart = adViewWrapperAdapter.getItemCount();
+            mDatas.addAll(youTubeVideos.items);
+            adViewWrapperAdapter.notifyItemRangeInserted(positonStart, youTubeVideos.items.size());
+        }
     }
 
     @Override
@@ -350,7 +390,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
 
         if (mDatas.size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
-        } else{
+        } else {
             emptyView.setVisibility(View.GONE);
         }
 

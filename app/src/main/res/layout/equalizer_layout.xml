@@ -32,7 +32,7 @@
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/setting_iv"
             android:layout_marginRight="10dp"
             android:layout_alignParentRight="true"

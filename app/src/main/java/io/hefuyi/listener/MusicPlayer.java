@@ -233,7 +233,7 @@ public class MusicPlayer {
         if (mService != null) {
             try {
                 return mService.getAudioSessionId();
-            } catch (final RemoteException ignored) {
+            } catch (final Throwable ignored) {
             }
         }
         return -1;
@@ -373,7 +373,9 @@ public class MusicPlayer {
 
     public static void clearQueue() {
         try {
-            mService.removeTracks(0, Integer.MAX_VALUE);
+            if (mService != null) {
+                mService.removeTracks(0, Integer.MAX_VALUE);
+            }
         } catch (final RemoteException ignored) {
         }
     }
