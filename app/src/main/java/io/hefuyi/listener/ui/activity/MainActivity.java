@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.admodule.AdModule;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.bumptech.glide.Glide;
+import com.rating.RatingActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.HashMap;
@@ -47,7 +48,9 @@ import io.hefuyi.listener.ui.fragment.PlayRankingFragment;
 import io.hefuyi.listener.ui.fragment.PlaylistFragment;
 import io.hefuyi.listener.ui.fragment.SearchFragment;
 import io.hefuyi.listener.util.ATEUtil;
+import io.hefuyi.listener.util.FileUtil;
 import io.hefuyi.listener.util.ListenerUtil;
+import io.hefuyi.listener.util.PreferencesUtility;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -191,6 +194,10 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         }
     };
 
+    private boolean isShowRating = false;
+    private boolean isShow = false;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -242,6 +249,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         subscribeMetaChangedEvent();
 
         AdModule.getInstance().getAdMob().requestNewInterstitial();
+
+        isShowRating = PreferencesUtility.getInstance(this).isShowRating();
 
     }
 
@@ -462,8 +471,29 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         if (panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
             panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         } else {
+            if (isShow) {
+                return;
+            }
 
-            super.onBackPressed();
+            if (isShowRating) {
+                isShow = true;
+                FileUtil.runSingleThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        isShow = false;
+                        isShowRating = false;
+                        PreferencesUtility.getInstance(getApplicationContext()).notShowRating();
+                    }
+                });
+                RatingActivity.launch(this);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 

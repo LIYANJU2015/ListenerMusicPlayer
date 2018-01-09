@@ -43,6 +43,17 @@ public class PreferencesUtility {
         return sInstance;
     }
 
+    public void notShowRating() {
+        final SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putBoolean("notShowRating", false);
+        editor.apply();
+    }
+
+    public boolean isShowRating() {
+        return mPreferences.getBoolean("notShowRating", true);
+    }
+
+
     public void setOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
         mPreferences.registerOnSharedPreferenceChangeListener(listener);
     }

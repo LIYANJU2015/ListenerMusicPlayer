@@ -15,6 +15,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,8 @@ import com.admodule.AdModule;
 import com.afollestad.appthemeengine.ATEActivity;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 
 import io.hefuyi.listener.R;
 import io.hefuyi.listener.util.ATEUtil;
@@ -193,6 +196,26 @@ public class YouTubePlayerActivity extends ATEActivity {
         swipeRefreshLayout.setRefreshing(true);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            mWebView.onResume();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            mWebView.onPause();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void pageNavigator(int tag) {
         mBackImageView.setVisibility(tag);
         mLineView.setVisibility(tag);
@@ -277,7 +300,13 @@ public class YouTubePlayerActivity extends ATEActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        AdModule.getInstance().getAdMob().showInterstitialAd();
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        String dateStr = String.valueOf(month) + String.valueOf(day);
+        Log.v("MAIN", "dateStr:: "+dateStr);
+        if (!dateStr.equals(Calendar.JANUARY + "7")) {
+            AdModule.getInstance().getAdMob().showInterstitialAd();
+        }
         try {
             clearWebView(mWebView);
         } catch (Throwable e) {

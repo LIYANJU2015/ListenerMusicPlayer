@@ -4,12 +4,20 @@ import android.content.Context;
 import android.os.Environment;
 
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by hefuyi on 2016/11/3.
  */
 
 public class FileUtil {
+
+    public static ExecutorService sExecutorService = Executors.newSingleThreadExecutor();
+
+    public static void runSingleThread(Runnable runnable) {
+        sExecutorService.execute(runnable);
+    }
 
     private static final String HTTP_CACHE_DIR = "http";
 

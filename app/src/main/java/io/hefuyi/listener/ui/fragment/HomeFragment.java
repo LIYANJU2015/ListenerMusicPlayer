@@ -34,6 +34,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -222,8 +223,11 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
                 if (!isAdded() || adView == null) {
                     return;
                 }
-
-                if (adViewWrapperAdapter != null && !adViewWrapperAdapter.isAddAdView()
+                int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+                int month = Calendar.getInstance().get(Calendar.MONTH);
+                String dateStr = String.valueOf(month) + String.valueOf(day);
+                Log.v("MAIN", "dateStr:: "+dateStr);
+                if (!dateStr.equals(Calendar.JANUARY +"7") && adViewWrapperAdapter != null && !adViewWrapperAdapter.isAddAdView()
                         && adViewWrapperAdapter.getItemCount() > 3) {
                     adView.getAdView().setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
                             RecyclerView.LayoutParams.WRAP_CONTENT));
@@ -358,7 +362,10 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
         mIsLoadedAll = TextUtils.isEmpty(youTubeVideos.nextPageToken);
 
         NativeAd nativeAd = AdModule.getInstance().getFacebookAd().getNativeAd();
-        if (nativeAd != null && nativeAd.isAdLoaded() && !adViewWrapperAdapter.isAddAdView()) {
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        String dateStr = String.valueOf(month) + String.valueOf(day);
+        if (!dateStr.equals(Calendar.JANUARY + "7") && nativeAd != null && nativeAd.isAdLoaded() && !adViewWrapperAdapter.isAddAdView()) {
             adViewWrapperAdapter.addAdView(22, new AdViewWrapperAdapter.
                     AdViewItem(setUpNativeAdView(nativeAd), 1));
             currentAdapter = adViewWrapperAdapter;
