@@ -8,19 +8,27 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Process;
 import android.support.multidex.MultiDexApplication;
 
 import com.admodule.AdModule;
 import com.afollestad.appthemeengine.ATE;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tubewebplayer.YouTubePlayerActivity;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import io.hefuyi.listener.api.YouTubeModelDeseializer;
+import io.hefuyi.listener.api.YoutubeApiService;
 import io.hefuyi.listener.dataloader.SongLoader;
 import io.hefuyi.listener.event.MediaUpdateEvent;
 import io.hefuyi.listener.injector.component.ApplicationComponent;
@@ -28,8 +36,10 @@ import io.hefuyi.listener.injector.component.DaggerApplicationComponent;
 import io.hefuyi.listener.injector.module.ApplicationModule;
 import io.hefuyi.listener.injector.module.NetworkModule;
 import io.hefuyi.listener.mvp.model.Song;
+import io.hefuyi.listener.mvp.model.YouTubeModel;
 import io.hefuyi.listener.permission.PermissionManager;
 import io.hefuyi.listener.util.ListenerUtil;
+import io.hefuyi.listener.util.PreferencesUtility;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -45,6 +55,14 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
     public static Context sContext;
 
     public static boolean sIsColdLaunch = false;
+
+
+    public static boolean isCanShowAd() {
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        String dateStr = String.valueOf(month) + String.valueOf(day);
+        return !dateStr.equals(Calendar.JANUARY + "7");
+    }
 
     @Override
     public void onCreate() {
@@ -70,6 +88,45 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
         AdModule.getInstance().getAdMob().initInterstitialAd();
 
         CrashReport.initCrashReport(getApplicationContext());
+
+        YouTubePlayerActivity.setDeveloperKey(Constants.DEVELOPER_KEY);
+
+        initLocalHomeYoutube();
+    }
+
+    public static YouTubeModel sYoutubeModel;
+
+    public static boolean isLoadLocalHomeYouTube() {
+        long fristTime = PreferencesUtility.getInstance(sContext).getFristTime();
+        boolean result = true;
+        if (fristTime != 0 && Math.abs(System.currentTimeMillis() - fristTime) >= 1000 * 60 * 60 * 24 * 10) {
+            PreferencesUtility.getInstance(sContext).setFristTime();
+            result = false;
+        }
+
+        return result;
+    }
+
+    private void initLocalHomeYoutube() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                    InputStream is = getAssets().open("ahameet.txt");
+                    int lenght = is.available();
+                    byte[]  buffer = new byte[lenght];
+                    is.read(buffer);
+                    String result = new String(buffer, "utf8");
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    gsonBuilder.registerTypeAdapter(YouTubeModel.class, new YouTubeModelDeseializer());
+                    Gson gson = gsonBuilder.create();
+                    sYoutubeModel = gson.fromJson(result, YouTubeModel.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override

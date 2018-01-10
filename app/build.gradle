@@ -69,10 +69,13 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
 
+    compile 'com.makeramen:roundedimageview:2.3.0'
+
     compile 'com.tencent.bugly:crashreport:latest.release'
     compile 'com.facebook.android:facebook-android-sdk:4.11.0'
     compile 'com.android.support:multidex:1.0.0'
     compile(name: 'admodule-release', ext: 'aar')
+    compile(name: 'tubewebplayer-release', ext: 'aar')
     compile(name: 'rating-release', ext: 'aar')
     compile 'com.google.android.gms:play-services-ads:10.2.4'
     compile 'com.facebook.android:audience-network-sdk:4.+'

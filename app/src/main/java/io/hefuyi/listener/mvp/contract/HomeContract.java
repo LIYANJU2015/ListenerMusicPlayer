@@ -1,25 +1,24 @@
 package io.hefuyi.listener.mvp.contract;
 
-import io.hefuyi.listener.mvp.model.HomeSound;
-import io.hefuyi.listener.mvp.model.YouTubeVideos;
+import io.hefuyi.listener.mvp.model.YouTubeModel;
 import io.hefuyi.listener.mvp.presenter.BasePresenter;
 import io.hefuyi.listener.mvp.view.BaseView;
 
 /**
- * Created by liyanju on 2017/11/18.
+ * Created by liyanju on 2018/1/9.
  */
 
-public interface HomeContract {
+public class HomeContract {
 
-    interface View extends BaseView {
+    public interface View extends BaseView {
 
-        void showYoutubeData(YouTubeVideos youTubeVideos);
+        void showYoutubeData(YouTubeModel youTubeModel);
 
         void showEmptyView();
     }
 
-    interface Presenter extends BasePresenter<HomeContract.View> {
+    public interface Presenter extends BasePresenter<HomeContract.View> {
 
-        void requestYoutube(String pageToken, String videoCategoryId);
+        void getYoutubeHomeMusic(String region);
     }
 }

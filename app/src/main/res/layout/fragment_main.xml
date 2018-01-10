@@ -35,7 +35,6 @@
                 app:tabIndicatorColor="@color/colorAccentReal"
                 app:tabBackground="?selectableItemBackgroundBorderless"
                 app:tabMinWidth="@dimen/tablayout_indicator_size_min"
-                app:tabMaxWidth="@dimen/tablayout_indicator_size_max"
                 app:tabSelectedTextColor="@color/colorPrimaryTextWhite"
                 app:tabTextColor="@color/colorSubTextWhite"
                 app:tabGravity="center"

@@ -108,6 +108,7 @@
     <string name="sure">Sure</string>
 
     <string name="main_page">Home</string>
+    <string name="main_recomm">Recommend</string>
 
     <string name="browser_open_failed">The link cannot be opened using the browser.</string>
     <string name="refresh_web_page">Refresh web page</string>

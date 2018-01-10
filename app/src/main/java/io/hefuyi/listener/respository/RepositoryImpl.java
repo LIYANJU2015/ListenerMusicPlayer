@@ -5,7 +5,9 @@ import android.content.Context;
 import java.io.File;
 import java.util.List;
 
+import io.hefuyi.listener.ListenerApp;
 import io.hefuyi.listener.R;
+import io.hefuyi.listener.api.HomeListApiService;
 import io.hefuyi.listener.api.YoutubeApiService;
 import io.hefuyi.listener.api.KuGouApiService;
 import io.hefuyi.listener.api.LastFmApiService;
@@ -29,12 +31,14 @@ import io.hefuyi.listener.mvp.model.Artist;
 import io.hefuyi.listener.mvp.model.FolderInfo;
 import io.hefuyi.listener.mvp.model.Playlist;
 import io.hefuyi.listener.mvp.model.Song;
+import io.hefuyi.listener.mvp.model.YouTubeModel;
 import io.hefuyi.listener.mvp.model.YouTubeVideos;
 import io.hefuyi.listener.respository.interfaces.Repository;
 import io.hefuyi.listener.util.LyricUtil;
 import io.hefuyi.listener.util.SoundCloudUtil;
 import retrofit2.Retrofit;
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -47,13 +51,30 @@ public class RepositoryImpl implements Repository {
     private KuGouApiService mKuGouApiService;
     private LastFmApiService mLastFmApiService;
     private YoutubeApiService mHomeSoundApiService;
+    private HomeListApiService mHomelistApiService;
     private Context mContext;
 
-    public RepositoryImpl(Context context, Retrofit kugou, Retrofit lastfm, Retrofit homefm) {
+    public RepositoryImpl(Context context, Retrofit kugou, Retrofit lastfm, Retrofit homefm, Retrofit homelistfm) {
         mContext = context;
         mKuGouApiService = kugou.create(KuGouApiService.class);
         mLastFmApiService = lastfm.create(LastFmApiService.class);
         mHomeSoundApiService = homefm.create(YoutubeApiService.class);
+        mHomelistApiService = homelistfm.create(HomeListApiService.class);
+    }
+
+    @Override
+    public Observable<YouTubeModel> getYoutubeHomeMusic(String region) {
+        if (ListenerApp.sYoutubeModel != null && ListenerApp.isLoadLocalHomeYouTube()) {
+            return Observable.create(new Observable.OnSubscribe<YouTubeModel>() {
+                @Override
+                public void call(Subscriber<? super YouTubeModel> subscriber) {
+                    subscriber.onNext(ListenerApp.sYoutubeModel);
+                    subscriber.onCompleted();
+                }
+            });
+        }  else {
+            return mHomelistApiService.getYoutubeMusic(region);
+        }
     }
 
     @Override

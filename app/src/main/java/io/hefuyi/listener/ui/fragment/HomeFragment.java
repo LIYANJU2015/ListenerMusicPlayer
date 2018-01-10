@@ -6,40 +6,31 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.admodule.AdModule;
-import com.admodule.admob.AdMobBanner;
 import com.bumptech.glide.Glide;
-import com.facebook.ads.AdChoicesView;
-import com.facebook.ads.MediaView;
-import com.facebook.ads.NativeAd;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdView;
-import com.paginate.Paginate;
-import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.tubewebplayer.YouTubePlayerActivity;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.hefuyi.listener.Constants;
 import io.hefuyi.listener.ListenerApp;
 import io.hefuyi.listener.R;
 import io.hefuyi.listener.injector.component.ApplicationComponent;
@@ -48,19 +39,24 @@ import io.hefuyi.listener.injector.component.HomeComponent;
 import io.hefuyi.listener.injector.module.ActivityModule;
 import io.hefuyi.listener.injector.module.HomeModule;
 import io.hefuyi.listener.mvp.contract.HomeContract;
-import io.hefuyi.listener.mvp.model.YouTubeVideos;
-import io.hefuyi.listener.ui.activity.YouTubePlayerActivity;
-import io.hefuyi.listener.util.ATEUtil;
-import io.hefuyi.listener.util.AdViewWrapperAdapter;
-import io.hefuyi.listener.util.FileUtil;
-import io.hefuyi.listener.util.HomeDiffCallBack;
+import io.hefuyi.listener.mvp.model.YouTubeModel;
+import io.hefuyi.listener.ui.activity.HomeListActivity;
+import io.hefuyi.listener.ui.activity.LocalWebYouTubePlayerActivity;
+import io.hefuyi.listener.util.ACache;
+import io.hefuyi.listener.util.DensityUtil;
+import io.hefuyi.listener.util.ListenerUtil;
+import io.hefuyi.listener.widget.GlideRoundTransform;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
+import retrofit2.Response;
 
 /**
- * Created by liyanju on 2017/11/18.
+ * Created by liyanju on 2018/1/9.
  */
 
-public class HomeFragment extends Fragment implements HomeContract.View, SwipeRefreshLayout.OnRefreshListener, Paginate.Callbacks {
+public class HomeFragment extends Fragment implements HomeContract.View{
+
+    private Context mContext;
+    private Activity activity;
 
     @Inject
     HomeContract.Presenter mPresenter;
@@ -74,14 +70,9 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
     @BindView(R.id.progressbar)
     MaterialProgressBar progressBar;
 
-    @BindView(R.id.home_swipeRefresh)
-    SwipeRefreshLayout swipeRefreshLayout;
+    private MultiItemTypeAdapter itemTypeAdapter;
 
-    private static ArrayList<YouTubeVideos.Snippet> mDatas = new ArrayList<>();
-
-    private Context mContext;
-
-    private Activity activity;
+    private static ArrayList<Object> mDatas = new ArrayList<>();
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -94,239 +85,6 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
         activity = getActivity();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        injectDependences();
-
-        mPresenter.attachView(this);
-    }
-
-    @Override
-    public void onRefresh() {
-        if (activity == null || activity.isFinishing()) {
-            return;
-        }
-
-        if (mIsLoadingMore) {
-            return;
-        }
-        swipeRefreshLayout.setRefreshing(true);
-        mPresenter.requestYoutube(sNextPageToken, "10");
-    }
-
-    @Override
-    public void onLoadMore() {
-        if (activity == null || activity.isFinishing()) {
-            return;
-        }
-
-        if (swipeRefreshLayout.isRefreshing()) {
-            return;
-        }
-        mIsLoadingMore = true;
-        mPresenter.requestYoutube(sNextPageToken, "10");
-    }
-
-    private static String sNextPageToken = "";
-
-    private Paginate mPaginate;
-
-    private boolean mIsLoadedAll;
-
-    private boolean mIsLoadingMore;
-
-    private AdViewWrapperAdapter adViewWrapperAdapter;
-
-    private  RecyclerView.Adapter currentAdapter;
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        initAdBannerView();
-
-        swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setColorSchemeColors(ATEUtil.getThemePrimaryColor(mContext));
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        recyclerView.setHasFixedSize(true);
-
-        CommonAdapter  commonAdapter = new CommonAdapter<YouTubeVideos.Snippet>(mContext,R.layout.home_video_item, mDatas) {
-            @Override
-            protected void convert(ViewHolder holder,  final YouTubeVideos.Snippet snippet, int position) {
-                ImageView imageView = holder.getView(R.id.img);
-                if (snippet.thumbnails.getStandard() != null) {
-                    Glide.with(mContext).load(snippet.thumbnails.getStandard().getUrl()).crossFade()
-                            .placeholder(R.drawable.mask).into(imageView);
-                } else if (snippet.thumbnails.getHigh() != null) {
-                    Glide.with(mContext).load(snippet.thumbnails.getHigh().getUrl()).crossFade()
-                            .placeholder(R.drawable.mask).into(imageView);
-                } else if (snippet.thumbnails.getStandard() != null) {
-                    Glide.with(mContext).load(snippet.thumbnails.getStandard().getUrl()).crossFade()
-                            .placeholder(R.drawable.mask).into(imageView);
-                } else {
-                    imageView.setImageResource(R.drawable.mask);
-                }
-
-                TextView titleTV = holder.getView(R.id.title);
-                titleTV.setText(snippet.title);
-
-                TextView descriptionTV = holder.getView(R.id.description);
-                if (snippet.statistics != null) {
-                    descriptionTV.setText(FileUtil
-                            .sizeFormatNum2String(Long.parseLong(snippet.statistics.getViewCount())));
-                } else {
-                    descriptionTV.setText("");
-                }
-
-                TextView timeTV = holder.getView(R.id.time);
-                if (snippet.contentDetails != null) {
-                    timeTV.setText(FileUtil.convertDuration(snippet.contentDetails.duration));
-                } else {
-                    timeTV.setText("");
-                }
-
-                holder.setOnClickListener(R.id.card_view, new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        YouTubePlayerActivity.launch(activity,
-                                "https://www.youtube.com/watch?v=" + snippet.vid, snippet.title);
-                    }
-                });
-            }
-        };
-
-        adViewWrapperAdapter = new AdViewWrapperAdapter(commonAdapter);
-        recyclerView.setAdapter(adViewWrapperAdapter);
-
-        mPaginate = Paginate.with(recyclerView, this)
-                .setLoadingTriggerThreshold(2)
-                .build();
-        mPaginate.setHasMoreDataToLoad(false);
-
-        if (mDatas.size() == 0) {
-            progressBar.setVisibility(View.VISIBLE);
-            mPresenter.requestYoutube(sNextPageToken, "10");
-        }
-    }
-
-
-    private AdMobBanner adView;
-
-    private void initAdBannerView() {
-        adView = AdModule.getInstance().getAdMob().createBannerAdView();
-        adView.setAdListener(new AdListener(){
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                if (!isAdded() || adView == null) {
-                    return;
-                }
-                int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-                int month = Calendar.getInstance().get(Calendar.MONTH);
-                String dateStr = String.valueOf(month) + String.valueOf(day);
-                Log.v("MAIN", "dateStr:: "+dateStr);
-                if (!dateStr.equals(Calendar.JANUARY +"7") && adViewWrapperAdapter != null && !adViewWrapperAdapter.isAddAdView()
-                        && adViewWrapperAdapter.getItemCount() > 3) {
-                    adView.getAdView().setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
-                            RecyclerView.LayoutParams.WRAP_CONTENT));
-                    adViewWrapperAdapter.addAdView(22, new AdViewWrapperAdapter.
-                            AdViewItem(adView.getAdView(), 1));
-
-                    adViewWrapperAdapter.notifyItemInserted(1);
-                }
-            }
-        });
-        adView.getAdView().loadAd(AdModule.getInstance().getAdMob().createAdRequest());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (adView != null) {
-            adView.resume();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (adView != null) {
-            adView.pause();
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (adView != null) {
-            adView.destroy();
-            adView = null;
-        }
-
-        mPresenter.unsubscribe();
-    }
-
-    private View setUpNativeAdView(NativeAd nativeAd) {
-        nativeAd.unregisterView();
-
-        View adView = LayoutInflater.from(activity).inflate(R.layout.home_video_ad_item, null);
-
-        FrameLayout adChoicesFrame = (FrameLayout) adView.findViewById(R.id.fb_adChoices);
-        ImageView nativeAdIcon = (ImageView) adView.findViewById(R.id.fb_half_icon);
-        TextView nativeAdTitle = (TextView) adView.findViewById(R.id.fb_banner_title);
-        TextView nativeAdBody = (TextView) adView.findViewById(R.id.fb_banner_desc);
-        TextView nativeAdCallToAction = (TextView) adView.findViewById(R.id.fb_half_download);
-        MediaView nativeAdMedia = (MediaView) adView.findViewById(com.admodule.R.id.fb_half_mv);
-
-        nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
-        nativeAdTitle.setText(nativeAd.getAdTitle());
-        nativeAdBody.setText(nativeAd.getAdBody());
-
-        // Downloading and setting the ad icon.
-        NativeAd.Image adIcon = nativeAd.getAdIcon();
-        NativeAd.downloadAndDisplayImage(adIcon, nativeAdIcon);
-
-        // Download and setting the cover image.
-        NativeAd.Image adCoverImage = nativeAd.getAdCoverImage();
-        nativeAdMedia.setNativeAd(nativeAd);
-
-        // Add adChoices icon
-        AdChoicesView adChoicesView = new AdChoicesView(activity, nativeAd, true);
-        adChoicesFrame.addView(adChoicesView, 0);
-        adChoicesFrame.setVisibility(View.VISIBLE);
-
-        nativeAd.registerViewForInteraction(adView);
-
-        return adView;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mPaginate != null) {
-            mPaginate.unbind();
-        }
-        AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
-        AdModule.getInstance().getAdMob().requestNewInterstitial();
-
-        if (adView != null) {
-            adView.destroy();
-        }
-    }
-
-    @Override
-    public boolean isLoading() {
-        return mIsLoadingMore;
-    }
-
-    @Override
-    public boolean hasLoadedAllItems() {
-        return mIsLoadedAll;
-    }
-
-
     public void injectDependences() {
         ApplicationComponent applicationComponent = ((ListenerApp) getActivity().getApplication()).getApplicationComponent();
         HomeComponent homeComponent = DaggerHomeComponent.builder()
@@ -335,6 +93,38 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
                 .homeModule(new HomeModule())
                 .build();
         homeComponent.inject(this);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        injectDependences();
+
+        mPresenter.attachView(this);
+    }
+
+    private int itemWidth = 0;
+    private int itemWidth2 = 0;
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView.setHasFixedSize(true);
+        itemTypeAdapter = new MultiItemTypeAdapter(getActivity(), mDatas);
+        itemTypeAdapter.addItemViewDelegate(new TitleItemDelagate());
+        itemTypeAdapter.addItemViewDelegate(new GridItemDelagate());
+        recyclerView.setAdapter(itemTypeAdapter);
+
+        if (mDatas.size() == 0) {
+            progressBar.setVisibility(View.VISIBLE);
+            mPresenter.getYoutubeHomeMusic("en");
+        }
+
+        itemWidth = (DensityUtil.getScreenWidth(mContext)
+                - DensityUtil.dip2px(mContext, 8) * 4) / 3;
+        itemWidth2 = (DensityUtil.getScreenWidth(mContext)
+                - DensityUtil.dip2px(mContext, 8) * 3) / 2;
     }
 
     @Nullable
@@ -348,39 +138,41 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
     }
 
     @Override
-    public void showYoutubeData(YouTubeVideos youTubeVideos) {
-        if (youTubeVideos == null || activity == null || activity.isFinishing()) {
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.unsubscribe();
+    }
+
+    @Override
+    public void showYoutubeData(YouTubeModel youTubeModel) {
+        if (!isAdded()) {
             return;
         }
+        Log.v("home", "showYoutubeData youTubeModel " + youTubeModel);
 
+        if (youTubeModel == null) {
+            youTubeModel = ListenerApp.sYoutubeModel;
+        }
+        if (youTubeModel != null) {
+            showHomeData(youTubeModel);
+        } else {
+            showEmptyView();
+        }
+    }
+
+    private void showHomeData(YouTubeModel youTubeModel) {
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+        Log.v("home", "showHomeData youTubeModel " + youTubeModel);
+
+        progressBar.setVisibility(View.GONE);
         emptyView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.INVISIBLE);
 
-        sNextPageToken = youTubeVideos.nextPageToken;
-        mIsLoadingMore = false;
-        mIsLoadedAll = TextUtils.isEmpty(youTubeVideos.nextPageToken);
-
-        NativeAd nativeAd = AdModule.getInstance().getFacebookAd().getNativeAd();
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        int month = Calendar.getInstance().get(Calendar.MONTH);
-        String dateStr = String.valueOf(month) + String.valueOf(day);
-        if (!dateStr.equals(Calendar.JANUARY + "7") && nativeAd != null && nativeAd.isAdLoaded() && !adViewWrapperAdapter.isAddAdView()) {
-            adViewWrapperAdapter.addAdView(22, new AdViewWrapperAdapter.
-                    AdViewItem(setUpNativeAdView(nativeAd), 1));
-            currentAdapter = adViewWrapperAdapter;
-        }
-
-        if (swipeRefreshLayout.isRefreshing()) {
-            swipeRefreshLayout.setRefreshing(false);
-            mDatas.clear();
-            mDatas.addAll(youTubeVideos.items);
-            adViewWrapperAdapter.notifyDataSetChanged();
-        } else {
-            int positonStart = adViewWrapperAdapter.getItemCount();
-            mDatas.addAll(youTubeVideos.items);
-            adViewWrapperAdapter.notifyItemRangeInserted(positonStart, youTubeVideos.items.size());
-        }
+        mDatas.clear();
+        mDatas.addAll(youTubeModel.youTubeItems);
+        itemTypeAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -388,12 +180,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
         if (activity == null || activity.isFinishing()) {
             return;
         }
-
-        if (swipeRefreshLayout.isRefreshing()) {
-            swipeRefreshLayout.setRefreshing(false);
-        }
-
-        mIsLoadingMore = false;
+        Log.v("home", "showEmptyView >>");
 
         if (mDatas.size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
@@ -403,5 +190,180 @@ public class HomeFragment extends Fragment implements HomeContract.View, SwipeRe
 
         recyclerView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    public ArrayList<YouTubeModel.YouTubeContent> getContentByName(YouTubeModel.Title title) {
+        for (Object obj : mDatas) {
+            if (obj instanceof HashMap) {
+                ArrayList<YouTubeModel.YouTubeContent> list = (ArrayList<YouTubeModel.YouTubeContent>)
+                        ((HashMap)obj).get(title);
+                if (list != null) {
+                    return list;
+                }
+            }
+        }
+        return null;
+    }
+
+    class GridItemDelagate implements ItemViewDelegate<Object> {
+
+        @Override
+        public int getItemViewLayoutId() {
+            return R.layout.home_grid_item_layout;
+        }
+
+        @Override
+        public boolean isForViewType(Object item, int position) {
+            return item instanceof HashMap;
+        }
+
+        private YouTubeModel.YouTubeContent getContent(ArrayList<YouTubeModel.YouTubeContent> arrayList, int postion) {
+            if (arrayList.size() > postion) {
+                return arrayList.get(postion);
+            }
+            return null;
+        }
+
+        private void setData(TextView textView, ImageView imageView, View view, int postion,
+                             ArrayList<YouTubeModel.YouTubeContent> list) {
+            final YouTubeModel.YouTubeContent content = getContent(list, postion);
+            if (content != null) {
+                view.setVisibility(View.VISIBLE);
+                Glide.with(mContext).load(content.icon).crossFade()
+                        .placeholder(R.drawable.default_album_art)
+                        .error(R.drawable.default_album_art)
+                        .transform(new CenterCrop(mContext), new GlideRoundTransform(mContext,6))
+                        .into(imageView);
+                textView.setText(content.name);
+                view.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        LocalWebYouTubePlayerActivity.launch(activity, content.extra, content.name);
+                    }
+                });
+            } else {
+                view.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        private void setData2(TextView textView, ImageView imageView, View view, int postion,
+                              ArrayList<YouTubeModel.YouTubeContent> list) {
+            final YouTubeModel.YouTubeContent content = getContent(list, postion);
+            if (content != null) {
+                view.setVisibility(View.VISIBLE);
+                Glide.with(mContext).load(content.icon).crossFade()
+                        .placeholder(R.drawable.default_album_art)
+                        .error(R.drawable.default_album_art)
+                        .transform(new CenterCrop(mContext), new GlideRoundTransform(mContext,6))
+                        .into(imageView);
+                textView.setText(content.name);
+                view.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        LocalWebYouTubePlayerActivity.launch(activity, content.extra, content.name);
+                    }
+                });
+            } else {
+                view.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void convert(ViewHolder holder, Object o, int position) {
+            HashMap<YouTubeModel.Title, ArrayList<YouTubeModel.YouTubeContent>> map = (HashMap<YouTubeModel.Title,
+                    ArrayList<YouTubeModel.YouTubeContent>>)o;
+            YouTubeModel.Title key = map.keySet().iterator().next();
+            ArrayList<YouTubeModel.YouTubeContent> arrayList = map.get(key);
+
+            View viewRaw1 = holder.getView(R.id.home_grid_raw1);
+            View viewRaw2 = holder.getView(R.id.home_grid_raw2);
+
+            ImageView imageView1 = holder.getView(R.id.song_image1);
+            imageView1.getLayoutParams().height = itemWidth;
+            TextView namgeTV1 = holder.getView(R.id.song_name_tv1);
+            View view1 = holder.getView(R.id.list_item_linear1);
+
+            ImageView imageView2 = holder.getView(R.id.song_image2);
+            imageView2.getLayoutParams().height = itemWidth;
+            TextView namgeTV2 = holder.getView(R.id.song_name_tv2);
+            View view2 = holder.getView(R.id.list_item_linear2);
+
+            ImageView imageView3 = holder.getView(R.id.song_image3);
+            imageView3.getLayoutParams().height = itemWidth;
+            TextView namgeTV3 = holder.getView(R.id.song_name_tv3);
+            View view3 = holder.getView(R.id.list_item_linear3);
+
+            ImageView imageView11 = holder.getView(R.id.song_image11);
+            imageView11.getLayoutParams().height = itemWidth;
+            TextView namgeTV11 = holder.getView(R.id.song_name_tv11);
+            View view11 = holder.getView(R.id.list_item_linear11);
+
+            ImageView imageView22 = holder.getView(R.id.song_image22);
+            imageView22.getLayoutParams().height = itemWidth;
+            TextView namgeTV22 = holder.getView(R.id.song_name_tv22);
+            View view22 = holder.getView(R.id.list_item_linear22);
+
+            ImageView imageView33 = holder.getView(R.id.song_image33);
+            imageView33.getLayoutParams().height = itemWidth;
+            TextView namgeTV33 = holder.getView(R.id.song_name_tv33);
+            View view33 = holder.getView(R.id.list_item_linear33);
+
+            if ("fiveBoxView".equals(key.style) || arrayList.size() < 3) {
+                viewRaw2.setVisibility(View.GONE);
+                if (arrayList.size() == 2) {
+                    imageView1.getLayoutParams().height = itemWidth2;
+                    imageView2.getLayoutParams().height = itemWidth2;
+                }
+                setData2(namgeTV1, imageView1, view1, 0, arrayList);
+                setData2(namgeTV2, imageView2, view2, 1, arrayList);
+                setData2(namgeTV3, imageView3, view3, 2, arrayList);
+                return;
+            }
+
+            setData(namgeTV1, imageView1, view1, 0, arrayList);
+
+
+            setData(namgeTV2, imageView2, view2, 1, arrayList);
+
+            setData(namgeTV3, imageView3, view3, 2, arrayList);
+
+            if (arrayList.size() <= 3) {
+                viewRaw2.setVisibility(View.GONE);
+                return;
+            }
+
+            viewRaw2.setVisibility(View.VISIBLE);
+
+            setData(namgeTV11, imageView11, view11, 3, arrayList);
+
+            setData(namgeTV22, imageView22, view22, 4, arrayList);
+
+            setData(namgeTV33, imageView33, view33, 5, arrayList);
+        }
+    }
+
+    class TitleItemDelagate implements ItemViewDelegate<Object> {
+
+        @Override
+        public int getItemViewLayoutId() {
+            return R.layout.home_title_item_layout;
+        }
+
+        @Override
+        public boolean isForViewType(Object item, int position) {
+            return item instanceof YouTubeModel.Title;
+        }
+
+        @Override
+        public void convert(ViewHolder holder, final Object object, int position) {
+            final YouTubeModel.Title title = (YouTubeModel.Title) object;
+            holder.setText(R.id.home_item_title, title.name);
+            holder.setOnClickListener(R.id.title_relative, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeListActivity.launch(activity, title.name, getContentByName(title));
+                }
+            });
+        }
     }
 }

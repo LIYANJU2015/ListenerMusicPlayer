@@ -1,0 +1,583 @@
+{
+    "style": "listView",
+    "code": 200,
+    "name": "PLUS接在线内容",
+    "data_type": 0,
+    "message": "ok",
+    "type": 0,
+    "id": 3067,
+    "contents": [
+        {
+            "style": "listView",
+            "name": "US",
+            "data_type": 0,
+            "type": 0,
+            "id": 4680,
+            "contents": [
+                {
+                    "style": "fiveBoxView",
+                    "name": "Recommendation",
+                    "data_type": 0,
+                    "type": 0,
+                    "id": 4681,
+                    "contents": [
+                        {
+                            "style": "listView",
+                            "name": "Top songs",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI",
+                            "type": 0,
+                            "id": 4690,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/cf2b23fcc85111e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Latest songs",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLFgquLnL59alW3xmYiWRaoz0oM3H17Lth",
+                            "type": 0,
+                            "id": 4691,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/fc4b8980c85111e7b6d5000c299158c5.png"
+                        }
+                    ],
+                    "icon": "http://resource.gomocdn.com/soft/micro/nav/module/icon/cOQ849jCSp.png"
+                },
+                {
+                    "style": "tenBoxView",
+                    "name": "Charts",
+                    "data_type": 0,
+                    "extra": "https://www.youtube.com/playlist?list=PLF1dWp7Ygy6RJJDq4NlD_X6GvivUlW9bC",
+                    "type": 0,
+                    "id": 4688,
+                    "contents": [
+                        {
+                            "style": "listView",
+                            "name": "Billboard",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLD7SPvDoEddZUrho5ynsBfaI7nqhaNN5c",
+                            "type": 0,
+                            "id": 4752,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/e487cd2ac85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Spotify",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLF1dWp7Ygy6RJJDq4NlD_X6GvivUlW9bC",
+                            "type": 0,
+                            "id": 4761,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/f5deb6e2c85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "iTunes",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLn4GvABOzCQu9fJA_aQD-yamSt5uwkzyc",
+                            "type": 0,
+                            "id": 4754,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/02a2704ec85411e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Trap Nation",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLC1og_v3eb4hrv4wsqG1G5dsNZh9bIscJ",
+                            "type": 0,
+                            "id": 4763,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/13fa01fec85411e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Beatport",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLMmqTuUsDkRIqz8Z-YlOLsDSB9nb0A_vn",
+                            "type": 0,
+                            "id": 4758,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/2402b62cc85411e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "BBC UK",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PL2vrmw2gup2Jre1MK2FL72rQkzbQzFnFM&spfreload=10",
+                            "type": 0,
+                            "id": 4753,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/3772a41ac85411e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Channel V",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PL3vX977o7dRyvzXT452Zo-rQC3g7wOzqB",
+                            "type": 0,
+                            "id": 4756,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/97f7-2017-06-27-14-24-46/soft/micro/nav/module/icon/h3xge1bx.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Oricon J-pop",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLH8SlvExlZpESVwF5uiYLVKI9NCQTSlHO",
+                            "type": 0,
+                            "id": 4759,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/245c-2017-06-27-16-28-43/soft/micro/nav/module/icon/2gs02B4Q.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Mnet K-pop",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PL2HEDIx6Li8jGsqCiXUq9fzCqpH99qqHV",
+                            "type": 0,
+                            "id": 4755,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/bb62-2017-06-27-14-21-25/soft/micro/nav/module/icon/FfE4ukg7.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Hito Chinese",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLsyOSbh5bs15OXJIigNdRgK0za-JXwhz1",
+                            "type": 0,
+                            "id": 4757,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/4dd6-2017-06-27-14-26-28/soft/micro/nav/module/icon/pAs58tmW.png"
+                        }
+                    ],
+                    "icon": "http://resource.gomocdn.com/soft/micro/nav/module/icon/DRhUFQwI45.png"
+                },
+                {
+                    "style": "tenBoxView",
+                    "name": "Activities",
+                    "data_type": 0,
+                    "type": 0,
+                    "id": 4687,
+                    "contents": [
+                        {
+                            "style": "listView",
+                            "name": "Workout",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLChOO_ZAB22WuyDODJ3kjJiU0oQzWOTyb",
+                            "type": 0,
+                            "id": 4741,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/e2242336c85211e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Morning",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLHwn8cKeb1J2TOechY-gogb9DZNwIwzIJ",
+                            "type": 0,
+                            "id": 4742,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/f4f8bd8cc85211e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Travel",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLw-VjHDlEOgsqXyMWCuM-E7Ft-Fns_gn5",
+                            "type": 0,
+                            "id": 4746,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/064b8a38c85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Pub",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PL127EBAC6281CC2E3",
+                            "type": 0,
+                            "id": 4750,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/14a93a80c85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Reading",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLOzlQzU-yr65nTKt7tEbHBnnd0AiGJoqZ",
+                            "type": 0,
+                            "id": 4743,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/219236cac85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "High tea",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLRb-5mC4V_Lop8KLXqSqMv4_mqw5M9jjW",
+                            "type": 0,
+                            "id": 4748,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/3a6a4d18c85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Sleep",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLl28ky4zTcricJ6TA8trUGf7tmfGl1FFf",
+                            "type": 0,
+                            "id": 4751,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/abce-2017-06-26-22-06-35/soft/micro/nav/module/icon/uBwyqTi3.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Late night",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLo3pNg0eiPc_JHZ-1jjCYbup7_rT3CBl8",
+                            "type": 0,
+                            "id": 4747,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/5d3c-2017-06-26-22-02-56/soft/micro/nav/module/icon/qHoz0aij.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Gaming",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PL08B5FA401C541429",
+                            "type": 0,
+                            "id": 4745,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/d874-2017-06-26-22-01-55/soft/micro/nav/module/icon/19zdj7OS.png"
+                        }
+                    ],
+                    "icon": "http://resource.gomocdn.com/soft/micro/nav/module/icon/A3nT6zyXxT.png"
+                },
+                {
+                    "style": "tenBoxView",
+                    "name": "Mood",
+                    "data_type": 0,
+                    "type": 0,
+                    "id": 4686,
+                    "contents": [
+                        {
+                            "style": "listView",
+                            "name": "Happy",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLsVEeDqau8ajMwMIIDn92SdkNsSIZEU5L",
+                            "type": 0,
+                            "id": 4729,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/5f72a376c85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Sweet",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLt8nGrP6uU-HojiVEAB00Enb9NW643ezp",
+                            "type": 0,
+                            "id": 4730,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/6c3ad3e4c85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Heart-broken",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLkFeuUTpU3wTFVHOVPSrCYySHm9m2j6XN",
+                            "type": 0,
+                            "id": 4731,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/7f1f599ec85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Motivational",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLhGO2bt0EkwvRUioaJMLxrMNhU44lRWg8",
+                            "type": 0,
+                            "id": 4732,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/91c8a406c85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Soft & Relaxing",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PL6AeZa4T0tSfvXgYripHQLPr3mtdqk-HX",
+                            "type": 0,
+                            "id": 4733,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/a2138b6ec85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Lonely",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLGoCPtHY448ekqpLZmMT-AvA5aOKza4Go",
+                            "type": 0,
+                            "id": 4737,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/b0f81668c85311e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Romantic",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLRNGf69jPtYLyoCALT1l1_5H6O2AaqkAH",
+                            "type": 0,
+                            "id": 4735,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/f232-2017-06-26-22-14-57/soft/micro/nav/module/icon/1MqeI8qQ.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Miss You",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PL6onCQ7SIRKas5oBUi0ylBiXKoypaKBW4",
+                            "type": 0,
+                            "id": 4736,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/201c-2017-06-26-22-15-26/soft/micro/nav/module/icon/0KM0XiKv.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Refreshed",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLNyF4u9mdcWo3Gy6k_UGxzzcwacLqF0Pi",
+                            "type": 0,
+                            "id": 4734,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/7b56-2017-06-26-22-13-55/soft/micro/nav/module/icon/nDo2wTyn.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Moved",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLzzwfO_D01M4nNqJKR828zz6r2wGikC5a",
+                            "type": 0,
+                            "id": 4738,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/a5ea-2017-06-26-22-16-41/soft/micro/nav/module/icon/Er1Tjb91.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Reminiscence",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PL2D1cxeX5H2_tf7ODlXYu9SJ6SO0y4ySW",
+                            "type": 0,
+                            "id": 4739,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/83b9-2017-06-26-22-17-16/soft/micro/nav/module/icon/4CLxs2yC.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Calm",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLgKDEvAN_N2wF8bX1Cp-QtRkArhEytAx2",
+                            "type": 0,
+                            "id": 4740,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/9d85-2017-06-26-22-17-45/soft/micro/nav/module/icon/Nc0lr4gQ.png"
+                        }
+                    ],
+                    "icon": "http://resource.gomocdn.com/soft/micro/nav/module/icon/JuSg7ZfTwj.png"
+                },
+                {
+                    "style": "tenBoxView",
+                    "name": "Genres",
+                    "data_type": 0,
+                    "type": 0,
+                    "id": 4685,
+                    "contents": [
+                        {
+                            "style": "listView",
+                            "name": "Hip-Hop",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLH6pfBXQXHEBElcVFl-gGewA2OaATF4xL",
+                            "type": 0,
+                            "id": 4718,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/571eaa0ec85211e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Country",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLvLX2y1VZ-tHnQyOqyemaWjZjrJYr8ksp",
+                            "type": 0,
+                            "id": 4726,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/6a0d3bb2c85211e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "R&B",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLFRSDckdQc1vs7FJS-it5nCreCQ3UGQEp",
+                            "type": 0,
+                            "id": 4728,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/7a4a659ac85211e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Pop",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLDcnymzs18LWbmCFUlZie7VsxQ_FIF0_y",
+                            "type": 0,
+                            "id": 4725,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/89980714c85211e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Rock",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLhd1HyMTk3f5S98HGlByL2eH1T3n6J-bR",
+                            "type": 0,
+                            "id": 4716,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/97a7fee0c85211e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Jazz",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLMcThd22goGYit-NKu2O8b4YMtwSTK9b9",
+                            "type": 0,
+                            "id": 4727,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/1e5a-2017-06-27-14-13-38/soft/micro/nav/module/icon/SYBeULKJ.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Soul",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLQog_FHUHAFUDDQPOTeAWSHwzFV1Zz5PZ",
+                            "type": 0,
+                            "id": 4719,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/88f6-2017-06-27-14-14-18/soft/micro/nav/module/icon/k0dVtvoR.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Classical",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLRb-5mC4V_Lop8KLXqSqMv4_mqw5M9jjW",
+                            "type": 0,
+                            "id": 4720,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/31e5-2017-06-27-14-14-48/soft/micro/nav/module/icon/0tzq72hz.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Punk",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLvP_6uwiamDS23WxoCfqY4LBOXF_yF1l9",
+                            "type": 0,
+                            "id": 4721,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/f53e-2017-06-27-14-15-16/soft/micro/nav/module/icon/uqMeaqIp.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Electronic",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLFPg_IUxqnZNTAbUMEZ76_snWd-ED5en7",
+                            "type": 0,
+                            "id": 4722,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/3ea9-2017-06-27-14-16-25/soft/micro/nav/module/icon/mRGGlYxU.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Latin",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLcfQmtiAG0X-DfWXza-DjCEahMU1BgsBG",
+                            "type": 0,
+                            "id": 4723,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/fec7-2017-06-27-14-16-59/soft/micro/nav/module/icon/3iZWLhmO.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Folk",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLx6QZyNaHQCxh4qw6r4hy68tGll9Oys9f",
+                            "type": 0,
+                            "id": 4724,
+                            "contents": [ ],
+                            "icon": "http://navigation.gomocdn.com/7262-2017-06-27-14-17-43/soft/micro/nav/module/icon/mjAaarXh.png"
+                        }
+                    ],
+                    "icon": "http://resource.gomocdn.com/soft/micro/nav/module/icon/q1QsNlhw4o.png"
+                },
+                {
+                    "style": "tenBoxView",
+                    "name": "Editor's Picks",
+                    "data_type": 0,
+                    "type": 0,
+                    "id": 4689,
+                    "contents": [
+                        {
+                            "style": "listView",
+                            "name": "Live Music",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLVn0x_fJ3ZS8wmcXBXdYKirk55vez372t",
+                            "type": 0,
+                            "id": 4764,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/4975dab0c85411e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Soft Noise",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PL0IYpdlafdv0gP13011Bap4N-45QkMd_Y",
+                            "type": 0,
+                            "id": 4766,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/5ced40cec85411e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "Internet Radio",
+                            "data_type": 1,
+                            "extra": "https://www.internet-radio.com/",
+                            "type": 0,
+                            "id": 4765,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/6f599e74c85411e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "2017 Grammy Winners",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLFgquLnL59alJu_h203FMEkTll8zjZ5x2",
+                            "type": 0,
+                            "id": 4767,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/83e59118c85411e7b6d5000c299158c5.png"
+                        },
+                        {
+                            "style": "listView",
+                            "name": "YouTube Covers",
+                            "data_type": 1,
+                            "extra": "https://www.youtube.com/playlist?list=PLFgquLnL59anKAUt8myZsDlGZB3Fh3vQE",
+                            "type": 0,
+                            "id": 4768,
+                            "contents": [ ],
+                            "icon": "https://solo-console.s3.amazonaws.com/9ad9aa3ac85411e7b6d5000c299158c5.png"
+                        }
+                    ],
+                    "icon": "http://resource.gomocdn.com/soft/micro/nav/module/icon/D30nuQ7sTm.png"
+                }
+            ],
+            "icon": "http://resource.gomocdn.com/soft/micro/nav/module/icon/vKABwGJ7w8.jpg"
+        }
+    ],
+    "icon": "http://resource.gomocdn.com/8f57-2017-09-07-16-32-21/soft/micro/nav/module/icon/9OHMTSEZ.png"
+}

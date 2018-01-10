@@ -15,7 +15,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +34,8 @@ import com.admodule.AdModule;
 import com.afollestad.appthemeengine.ATEActivity;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
 
+import io.hefuyi.listener.ListenerApp;
 import io.hefuyi.listener.R;
 import io.hefuyi.listener.util.ATEUtil;
 import io.hefuyi.listener.widget.CustomSwipeToRefresh;
@@ -48,7 +46,7 @@ import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
  * Created by liyanju on 2017/12/10.
  */
 
-public class YouTubePlayerActivity extends ATEActivity {
+public class LocalWebYouTubePlayerActivity extends ATEActivity {
 
     private CacheWebView mWebView;
 
@@ -96,7 +94,7 @@ public class YouTubePlayerActivity extends ATEActivity {
                             mWebView.reload();
                             return true;
                         case R.id.copy:
-                            toCopy(YouTubePlayerActivity.this, url);
+                            toCopy(LocalWebYouTubePlayerActivity.this, url);
                             return true;
                         case R.id.default_browser:
                             openBrowser(url);
@@ -242,7 +240,7 @@ public class YouTubePlayerActivity extends ATEActivity {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            if (url.equals(YouTubePlayerActivity.this.url)) {
+            if (url.equals(LocalWebYouTubePlayerActivity.this.url)) {
                 pageNavigator(View.GONE);
             } else {
                 pageNavigator(View.VISIBLE);
@@ -300,13 +298,11 @@ public class YouTubePlayerActivity extends ATEActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        int month = Calendar.getInstance().get(Calendar.MONTH);
-        String dateStr = String.valueOf(month) + String.valueOf(day);
-        Log.v("MAIN", "dateStr:: "+dateStr);
-        if (!dateStr.equals(Calendar.JANUARY + "7")) {
+
+        if (ListenerApp.isCanShowAd()) {
             AdModule.getInstance().getAdMob().showInterstitialAd();
         }
+
         try {
             clearWebView(mWebView);
         } catch (Throwable e) {
@@ -358,7 +354,7 @@ public class YouTubePlayerActivity extends ATEActivity {
     }
 
     public static void launch(Activity activity, String url, String title) {
-        Intent intent = new Intent(activity, YouTubePlayerActivity.class);
+        Intent intent = new Intent(activity, LocalWebYouTubePlayerActivity.class);
         intent.putExtra("url", url);
         intent.putExtra("title", title);
         activity.startActivity(intent);

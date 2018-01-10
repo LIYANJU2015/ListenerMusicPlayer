@@ -93,7 +93,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.activity.YouTubePlayerActivity"
+        <activity android:name=".ui.activity.LocalWebYouTubePlayerActivity"
             android:hardwareAccelerated="true"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
@@ -124,6 +124,13 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.activity.HomeListActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:theme="@style/translucent_theme"
+            android:screenOrientation="portrait"
+            />
 
         <meta-data
             android:name="BUGLY_APPID"

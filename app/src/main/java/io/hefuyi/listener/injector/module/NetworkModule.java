@@ -11,7 +11,9 @@ import dagger.Module;
 import dagger.Provides;
 import io.hefuyi.listener.Constants;
 import io.hefuyi.listener.ListenerApp;
+import io.hefuyi.listener.api.YouTubeModelDeseializer;
 import io.hefuyi.listener.injector.scope.PerApplication;
+import io.hefuyi.listener.mvp.model.YouTubeModel;
 import io.hefuyi.listener.mvp.model.YouTubeVideos;
 import io.hefuyi.listener.respository.YoutubeSnippetDeserializer;
 import io.hefuyi.listener.respository.RepositoryImpl;
@@ -39,8 +41,9 @@ public class NetworkModule {
     @PerApplication
     Repository provideRepository(@Named("kugou") Retrofit kugou,
                                  @Named("lastfm") Retrofit lastfm,
-                                 @Named("homesound") Retrofit homefm) {
-        return new RepositoryImpl(mListenerApp, kugou, lastfm, homefm);
+                                 @Named("homesound") Retrofit homefm,
+                                 @Named("homelist") Retrofit homelistfm) {
+        return new RepositoryImpl(mListenerApp, kugou, lastfm, homefm, homelistfm);
     }
 
     @Provides
@@ -51,6 +54,34 @@ public class NetworkModule {
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(YouTubeVideos.class, new YoutubeSnippetDeserializer());
+        Gson gson = gsonBuilder.create();
+        GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
+
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .cache(new Cache(FileUtil.getHttpCacheDir(mListenerApp.getApplicationContext()), Constants.HTTP_CACHE_SIZE))
+                .connectTimeout(Constants.HTTP_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
+                .readTimeout(Constants.HTTP_READ_TIMEOUT, TimeUnit.MILLISECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(endpointUrl)
+                .client(client)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+        return retrofit;
+    }
+
+    @Provides
+    @Named("homelist")
+    @PerApplication
+    Retrofit provideHomelist() {
+        String endpointUrl = Constants.HOME_YOUTUBE_URL;
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(YouTubeModel.class, new YouTubeModelDeseializer());
         Gson gson = gsonBuilder.create();
         GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
 
