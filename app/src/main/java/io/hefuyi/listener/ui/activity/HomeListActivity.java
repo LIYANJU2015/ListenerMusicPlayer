@@ -3,6 +3,7 @@ package io.hefuyi.listener.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.admodule.AdModule;
+import com.admodule.Utils;
 import com.admodule.admob.AdMobBanner;
 import com.afollestad.appthemeengine.ATEActivity;
 import com.bumptech.glide.Glide;
@@ -35,6 +37,8 @@ import io.hefuyi.listener.R;
 import io.hefuyi.listener.mvp.model.YouTubeModel;
 import io.hefuyi.listener.util.ATEUtil;
 import io.hefuyi.listener.util.AdViewWrapperAdapter;
+import io.hefuyi.listener.util.ListenerUtil;
+import io.hefuyi.listener.util.PreferencesUtility;
 import io.hefuyi.listener.widget.GlideRoundTransform;
 
 /**
@@ -68,6 +72,8 @@ public class HomeListActivity extends ATEActivity{
         overridePendingTransition(0, R.anim.slide_bottom_out);
     }
 
+    private FloatingActionButton mRecomFab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +101,27 @@ public class HomeListActivity extends ATEActivity{
         setUpRecyclerView();
 
         initAdBannerView();
+
+        mRecomFab = (FloatingActionButton) findViewById(R.id.recom_fab);
+        mRecomFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRecomFab.hide();
+                PreferencesUtility.getInstance(ListenerApp.sContext).setNotShowRecomFAB();
+                mRecomFab.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ListenerUtil.gotoGP(ListenerApp.sContext, ListenerUtil.sRecommendPageName);
+                    }
+                });
+            }
+        });
+        if (PreferencesUtility.getInstance(ListenerApp.sContext).isShowRecomFAB()
+                && !ListenerUtil.checkRecommendExist(ListenerApp.sContext, ListenerUtil.sRecommendPageName)) {
+            mRecomFab.setVisibility(View.VISIBLE);
+        } else {
+            mRecomFab.setVisibility(View.GONE);
+        }
     }
 
     private AdMobBanner adView;

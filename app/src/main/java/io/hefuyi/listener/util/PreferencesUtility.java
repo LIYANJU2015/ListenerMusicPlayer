@@ -43,6 +43,14 @@ public class PreferencesUtility {
         return sInstance;
     }
 
+    public boolean isShowRecomFAB() {
+        return mPreferences.getBoolean("recom_fab", true);
+    }
+
+    public void setNotShowRecomFAB() {
+        mPreferences.edit().putBoolean("recom_fab", false).apply();
+    }
+
     public void setFristTime() {
         final SharedPreferences.Editor editor = mPreferences.edit();
         editor.putLong("current_time", System.currentTimeMillis());

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -25,6 +26,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -53,6 +55,51 @@ public class ListenerUtil {
 
     public static final String MUSIC_ONLY_SELECTION = MediaStore.Audio.AudioColumns.IS_MUSIC + "=1"
             + " AND " + MediaStore.Audio.AudioColumns.TITLE + " != ''";
+
+
+    public static final String RECOMMEND_PACKAGE_NAME1 = "com.gomusic.musicdownloader";
+    public static final String RECOMMEND_PACKAGE_NAME2 = "com.gomusic.freedownloader";
+    public static String sRecommendPageName = RECOMMEND_PACKAGE_NAME2;
+
+    public static void initRecommend() {
+        int i = new Random().nextInt(10);
+        if (i % 2 == 0) {
+            sRecommendPageName = RECOMMEND_PACKAGE_NAME1;
+        } else {
+            sRecommendPageName = RECOMMEND_PACKAGE_NAME2;
+        }
+
+    }
+
+    public static boolean checkRecommendExist(Context context, String packageName) {
+        List<PackageInfo> packages = context.getPackageManager().getInstalledPackages(0);
+        if (packages == null) {
+            return false;
+        }
+        for (PackageInfo packageInfo : packages) {
+            if (packageInfo.packageName.equals(packageName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void gotoGP(Context context, String packageName) {
+        try {
+            Intent launchIntent = new Intent();
+            launchIntent.setPackage("com.android.vending");
+            launchIntent.setData(Uri.parse("market://details?id=" + packageName));
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(launchIntent);
+        } catch (android.content.ActivityNotFoundException anfe) {
+            try {
+                context.startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://play.google.com/store/apps/details?id=" + packageName)));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
     public static boolean isMarshmallow() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;

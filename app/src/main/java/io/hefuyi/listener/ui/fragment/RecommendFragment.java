@@ -48,6 +48,7 @@ import io.hefuyi.listener.mvp.model.YouTubeVideos;
 import io.hefuyi.listener.util.ATEUtil;
 import io.hefuyi.listener.util.AdViewWrapperAdapter;
 import io.hefuyi.listener.util.FileUtil;
+import io.hefuyi.listener.util.ListenerUtil;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
@@ -152,15 +153,15 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
                 ImageView imageView = holder.getView(R.id.img);
                 if (snippet.thumbnails.getStandard() != null) {
                     Glide.with(mContext).load(snippet.thumbnails.getStandard().getUrl()).crossFade()
-                            .placeholder(R.drawable.mask).into(imageView);
+                            .placeholder(R.drawable.default_image).into(imageView);
                 } else if (snippet.thumbnails.getHigh() != null) {
                     Glide.with(mContext).load(snippet.thumbnails.getHigh().getUrl()).crossFade()
-                            .placeholder(R.drawable.mask).into(imageView);
+                            .placeholder(R.drawable.default_image).into(imageView);
                 } else if (snippet.thumbnails.getStandard() != null) {
                     Glide.with(mContext).load(snippet.thumbnails.getStandard().getUrl()).crossFade()
-                            .placeholder(R.drawable.mask).into(imageView);
+                            .placeholder(R.drawable.default_image).into(imageView);
                 } else {
-                    imageView.setImageResource(R.drawable.mask);
+                    imageView.setImageResource(R.drawable.default_image);
                 }
 
                 TextView titleTV = holder.getView(R.id.title);
@@ -184,6 +185,7 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
                 holder.setOnClickListener(R.id.card_view, new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
+                        isClickPlay = true;
                         YouTubePlayerActivity.launch(activity, snippet.vid);
                     }
                 });
@@ -203,6 +205,8 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
             mPresenter.requestYoutube(sNextPageToken, "10");
         }
     }
+
+    private boolean isClickPlay;
 
 
     private AdMobBanner adView;
@@ -235,6 +239,10 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
         super.onResume();
         if (adView != null) {
             adView.resume();
+        }
+        if (isClickPlay && ListenerApp.isCanShowAd()) {
+            isClickPlay = false;
+            AdModule.getInstance().getAdMob().showInterstitialAd();
         }
     }
 
@@ -298,7 +306,6 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
             mPaginate.unbind();
         }
         AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
-        AdModule.getInstance().getAdMob().requestNewInterstitial();
 
         if (adView != null) {
             adView.destroy();
