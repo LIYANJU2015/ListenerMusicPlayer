@@ -57,8 +57,8 @@ public class ListenerUtil {
             + " AND " + MediaStore.Audio.AudioColumns.TITLE + " != ''";
 
 
-    public static final String RECOMMEND_PACKAGE_NAME1 = "com.gomusic.musicdownloader";
-    public static final String RECOMMEND_PACKAGE_NAME2 = "com.gomusic.freedownloader";
+    public static final String RECOMMEND_PACKAGE_NAME1 = "com.gomusic.downloadmp3";
+    public static final String RECOMMEND_PACKAGE_NAME2 = "com.gomusic.freedownloadmp3";
     public static String sRecommendPageName = RECOMMEND_PACKAGE_NAME2;
 
     public static void initRecommend() {

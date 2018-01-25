@@ -376,7 +376,7 @@ public class MusicPlayer {
             if (mService != null) {
                 mService.removeTracks(0, Integer.MAX_VALUE);
             }
-        } catch (final RemoteException ignored) {
+        } catch (final Throwable ignored) {
         }
     }
 

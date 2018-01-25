@@ -61,7 +61,7 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
         int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         int month = Calendar.getInstance().get(Calendar.MONTH);
         String dateStr = String.valueOf(month) + String.valueOf(day);
-        return !dateStr.equals(Calendar.JANUARY + "13");
+        return !dateStr.equals(Calendar.JANUARY + "22");
     }
 
     @Override
