@@ -1,6 +1,7 @@
 package io.hefuyi.listener.ui.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -14,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,9 +23,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.admodule.AdModule;
+import com.admodule.adfb.IFacebookAd;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.bumptech.glide.Glide;
-import com.rating.RatingActivity;
+import com.facebook.ads.NativeAd;
+import com.nostra13.universalimageloader.utils.L;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.HashMap;
@@ -48,7 +52,6 @@ import io.hefuyi.listener.ui.fragment.PlayRankingFragment;
 import io.hefuyi.listener.ui.fragment.PlaylistFragment;
 import io.hefuyi.listener.ui.fragment.SearchFragment;
 import io.hefuyi.listener.util.ATEUtil;
-import io.hefuyi.listener.util.FileUtil;
 import io.hefuyi.listener.util.ListenerUtil;
 import io.hefuyi.listener.util.PreferencesUtility;
 import rx.Subscription;
@@ -197,11 +200,14 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
     private boolean isShowRating = false;
     private boolean isShow = false;
 
+    private Activity activity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         action = getIntent().getAction();
+
+        activity = this;
 
         isDarkTheme = ATEUtil.getATEKey(this).equals("dark_theme");
 
@@ -252,6 +258,36 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
 
         isShowRating = PreferencesUtility.getInstance(this).isShowRating();
 
+        if (ListenerApp.sIsAdDialog) {
+            ListenerApp.sIsAdDialog = false;
+            AdModule.getInstance().getFacebookAd().setLoadListener(new IFacebookAd.FacebookAdListener() {
+                @Override
+                public void onLoadedAd(View view) {
+                    AdModule.getInstance().getFacebookAd().setLoadListener(null);
+                    try {
+                        AdModule.getInstance().createMaterialDialog().showAdDialog(activity, view);
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onLoadedAd(NativeAd nativeAd) {
+
+                }
+
+                @Override
+                public void onStartLoadAd(View view) {
+                }
+
+                @Override
+                public void onLoadAdFailed(int i, String s) {
+                    AdModule.getInstance().getFacebookAd().setLoadListener(null);
+                }
+            });
+            AdModule.getInstance().getFacebookAd().loadAd(false, "200998730474227_201002260473874");
+        }
+
     }
 
     @Override
@@ -261,6 +297,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         if (mPanelSlideListener != null) {
             RxBus.getInstance().unSubscribe(mPanelSlideListener);
         }
+        AdModule.getInstance().getFacebookAd().cancelLoadListener();
+        AdModule.getInstance().getFacebookAd().destroyNativeAdAdView();
     }
 
     private void loadEverything() {
@@ -471,29 +509,7 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         if (panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
             panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         } else {
-            if (isShow) {
-                return;
-            }
-
-            if (isShowRating) {
-                isShow = true;
-                FileUtil.runSingleThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        isShow = false;
-                        isShowRating = false;
-                        PreferencesUtility.getInstance(getApplicationContext()).notShowRating();
-                    }
-                });
-                RatingActivity.launch(this);
-            } else {
-                super.onBackPressed();
-            }
+            super.onBackPressed();
         }
     }
 

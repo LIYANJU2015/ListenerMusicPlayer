@@ -305,7 +305,6 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
         if (mPaginate != null) {
             mPaginate.unbind();
         }
-        AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
 
         if (adView != null) {
             adView.destroy();
@@ -358,7 +357,9 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
         mIsLoadedAll = TextUtils.isEmpty(youTubeVideos.nextPageToken);
 
         NativeAd nativeAd = AdModule.getInstance().getFacebookAd().getNativeAd();
-
+        if (nativeAd == null || !nativeAd.isAdLoaded()) {
+            nativeAd = AdModule.getInstance().getFacebookAd().nextNativieAd();
+        }
         if (ListenerApp.isCanShowAd() && nativeAd != null && nativeAd.isAdLoaded() && !adViewWrapperAdapter.isAddAdView()) {
             adViewWrapperAdapter.addAdView(22, new AdViewWrapperAdapter.
                     AdViewItem(setUpNativeAdView(nativeAd), 1));

@@ -14,6 +14,7 @@ import android.support.multidex.MultiDexApplication;
 import com.admodule.AdModule;
 import com.afollestad.appthemeengine.ATE;
 import com.facebook.FacebookSdk;
+import com.facebook.ads.Ad;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -56,12 +57,25 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
 
     public static boolean sIsColdLaunch = false;
 
+    public static boolean sIsAdDialog = false;
+
+    private static long time;
 
     public static boolean isCanShowAd() {
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        int month = Calendar.getInstance().get(Calendar.MONTH);
-        String dateStr = String.valueOf(month) + String.valueOf(day);
-        return !dateStr.equals(Calendar.JANUARY + "22");
+//        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+//        int month = Calendar.getInstance().get(Calendar.MONTH);
+//        String dateStr = String.valueOf(month) + String.valueOf(day);
+//        boolean isCanShow = !dateStr.equals(Calendar.FEBRUARY + "12");
+//        if (!isCanShow) {
+//            if (Math.abs(System.currentTimeMillis() - time) >= 10 * 1000 * 60) {
+//                return true;
+//            } else {
+//                time = System.currentTimeMillis();
+//                return false;
+//            }
+//        }
+
+        return true;
     }
 
     @Override
@@ -69,7 +83,7 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
         super.onCreate();
         sContext = this;
         sIsColdLaunch = true;
-
+        time = System.currentTimeMillis();
 //        initLeakCanary();
 //        setCrashHandler();
 //        initStetho();
@@ -89,7 +103,9 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
 
         AdModule.getInstance().getAdMob().initInterstitialAd();
 
-        CrashReport.initCrashReport(getApplicationContext());
+        CrashReport.initCrashReport(this);
+
+        AdModule.getInstance().getFacebookAd().loadAds("200998730474227_201002143807219");
 
         YouTubePlayerActivity.setDeveloperKey(Constants.DEVELOPER_KEY);
 

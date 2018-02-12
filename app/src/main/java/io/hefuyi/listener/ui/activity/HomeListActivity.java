@@ -213,9 +213,11 @@ public class HomeListActivity extends ATEActivity{
 
         adViewWrapperAdapter = new AdViewWrapperAdapter(commonadapter);
 
-        NativeAd nativeAd = AdModule.getInstance().getFacebookAd().getNativeAd();
-
-        if (ListenerApp.isCanShowAd() && nativeAd != null && nativeAd.isAdLoaded() && mData.size() > 3
+        NativeAd nativeAd = AdModule.getInstance().getFacebookAd().nextNativieAd();
+        if (nativeAd == null || !nativeAd.isAdLoaded()) {
+            nativeAd = AdModule.getInstance().getFacebookAd().getNativeAd();
+        }
+        if (ListenerApp.isCanShowAd() && nativeAd != null && nativeAd.isAdLoaded() && mData.size() >= 2
                 && !adViewWrapperAdapter.isAddAdView()) {
             adViewWrapperAdapter.addAdView(22, new AdViewWrapperAdapter.
                     AdViewItem(setUpNativeAdView(nativeAd), 1));

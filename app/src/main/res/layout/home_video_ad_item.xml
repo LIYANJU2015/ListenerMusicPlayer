@@ -74,7 +74,7 @@
                         android:ellipsize="end"
                         android:fontFamily="sans-serif-medium"
                         android:maxLines="1"
-                        android:textColor="@color/C1_H4"
+                        android:textColor="@color/black_de"
                         android:textSize="@dimen/dp_14" />
 
                     <TextView

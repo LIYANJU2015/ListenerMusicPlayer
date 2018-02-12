@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.admodule.AdModule;
 import com.admodule.adfb.IFacebookAd;
+import com.facebook.ads.NativeAd;
 import com.githang.statusbar.StatusBarCompat;
 
 import io.hefuyi.listener.ListenerApp;
@@ -50,6 +51,11 @@ public class SplashActivity extends AppCompatActivity implements IFacebookAd.Fac
             startMain();
         }
     };
+
+    @Override
+    public void onLoadedAd(NativeAd nativeAd) {
+
+    }
 
     @Override
     protected void onDestroy() {
@@ -94,7 +100,7 @@ public class SplashActivity extends AppCompatActivity implements IFacebookAd.Fac
 
         if (!ListenerApp.sIsColdLaunch) {
             ListenerApp.sIsColdLaunch = false;
-            AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
+            ListenerApp.sIsAdDialog = true;
             startMain();
             return;
         }
