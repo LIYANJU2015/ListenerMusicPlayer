@@ -255,39 +255,6 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         subscribeMetaChangedEvent();
 
         AdModule.getInstance().getAdMob().requestNewInterstitial();
-
-        isShowRating = PreferencesUtility.getInstance(this).isShowRating();
-
-        if (ListenerApp.sIsAdDialog) {
-            ListenerApp.sIsAdDialog = false;
-            AdModule.getInstance().getFacebookAd().setLoadListener(new IFacebookAd.FacebookAdListener() {
-                @Override
-                public void onLoadedAd(View view) {
-                    AdModule.getInstance().getFacebookAd().setLoadListener(null);
-                    try {
-                        AdModule.getInstance().createMaterialDialog().showAdDialog(activity, view);
-                    } catch (Throwable e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onLoadedAd(NativeAd nativeAd) {
-
-                }
-
-                @Override
-                public void onStartLoadAd(View view) {
-                }
-
-                @Override
-                public void onLoadAdFailed(int i, String s) {
-                    AdModule.getInstance().getFacebookAd().setLoadListener(null);
-                }
-            });
-            AdModule.getInstance().getFacebookAd().loadAd(false, "200998730474227_201002260473874");
-        }
-
     }
 
     @Override

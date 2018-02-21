@@ -117,7 +117,7 @@ public class SplashActivity extends AppCompatActivity implements IFacebookAd.Fac
         logoIV = (ImageView) findViewById(R.id.logo_iv);
 
         AdModule.getInstance().getFacebookAd().setLoadListener(this);
-        AdModule.getInstance().getFacebookAd().loadAd(false, "200998730474227_201002143807219");
+        AdModule.getInstance().getFacebookAd().loadAd(false, "200998730474227_223418144898952");
 
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(logoIV, "Alpha", 0f, 1f);
         objectAnimator.setDuration(3500);
@@ -135,7 +135,7 @@ public class SplashActivity extends AppCompatActivity implements IFacebookAd.Fac
                     adContainerLinear.removeAllViews();
                     adContainerLinear.addView(adView);
                     AdModule.getInstance().getFacebookAd().cancelLoadListener();
-                    AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_201002260473874");
+                    AdModule.getInstance().getFacebookAd().loadAd(true, "200998730474227_223664654874301");
                 } else {
                     startMain();
                 }

@@ -412,22 +412,26 @@ public class MusicService extends Service {
         if (D) Log.d(TAG, "Got new intent " + intent + ", startId = " + startId);
         mServiceStartId = startId;
 
-        if (intent != null) {
-            final String action = intent.getAction();
+        try {
+            if (intent != null) {
+                final String action = intent.getAction();
 
-            if (SHUTDOWN.equals(action)) {
-                mShutdownScheduled = false;
-                releaseServiceUiAndStop();
-                return START_NOT_STICKY;
+                if (SHUTDOWN.equals(action)) {
+                    mShutdownScheduled = false;
+                    releaseServiceUiAndStop();
+                    return START_NOT_STICKY;
+                }
+
+                handleCommandIntent(intent);
             }
 
-            handleCommandIntent(intent);
-        }
+            scheduleDelayedShutdown();
 
-        scheduleDelayedShutdown();
-
-        if (intent != null && intent.getBooleanExtra(FROM_MEDIA_BUTTON, false)) {
-            MediaButtonIntentReceiver.completeWakefulIntent(intent);
+            if (intent != null && intent.getBooleanExtra(FROM_MEDIA_BUTTON, false)) {
+                MediaButtonIntentReceiver.completeWakefulIntent(intent);
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
 
         return START_NOT_STICKY;

@@ -105,7 +105,7 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
 
         CrashReport.initCrashReport(this);
 
-        AdModule.getInstance().getFacebookAd().loadAds("200998730474227_201002143807219");
+        AdModule.getInstance().getFacebookAd().loadAds("200998730474227_223664654874301");
 
         YouTubePlayerActivity.setDeveloperKey(Constants.DEVELOPER_KEY);
 
@@ -194,7 +194,7 @@ public class ListenerApp extends MultiDexApplication implements AdModule.AdCallB
 
     @Override
     public String getFBNativeAdId() {
-        return "200998730474227_201002143807219";
+        return "200998730474227_223418144898952";
     }
 
     //    private void initLeakCanary() {

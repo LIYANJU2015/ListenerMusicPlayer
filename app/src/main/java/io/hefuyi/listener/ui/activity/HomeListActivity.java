@@ -17,10 +17,12 @@ import android.widget.TextView;
 
 import com.admodule.AdModule;
 import com.admodule.Utils;
+import com.admodule.adfb.IFacebookAd;
 import com.admodule.admob.AdMobBanner;
 import com.afollestad.appthemeengine.ATEActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.facebook.ads.Ad;
 import com.facebook.ads.AdChoicesView;
 import com.facebook.ads.NativeAd;
 import com.google.android.gms.ads.AdListener;
@@ -122,6 +124,14 @@ public class HomeListActivity extends ATEActivity{
         } else {
             mRecomFab.setVisibility(View.GONE);
         }
+
+        AdModule.getInstance().getFacebookAd().interstitialLoad("200998730474227_223666694874097", new IFacebookAd.FBInterstitialAdListener(){
+            @Override
+            public void onInterstitialDismissed(Ad ad) {
+                super.onInterstitialDismissed(ad);
+                AdModule.getInstance().getFacebookAd().destoryInterstitial();
+            }
+        });
     }
 
     private AdMobBanner adView;
@@ -172,7 +182,15 @@ public class HomeListActivity extends ATEActivity{
 
         if (ListenerApp.isCanShowAd()) {
             AdModule.getInstance().getFacebookAd().loadAd(true, "1305172892959949_1313403128803592");
-            AdModule.getInstance().getAdMob().showInterstitialAd();
+            try {
+                if (AdModule.getInstance().getFacebookAd().isInterstitialLoaded()) {
+                    AdModule.getInstance().getFacebookAd().showInterstitial();
+                } else {
+                    AdModule.getInstance().getAdMob().showInterstitialAd();
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
 
         if (adView != null) {
